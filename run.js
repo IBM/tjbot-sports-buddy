@@ -15,6 +15,7 @@ var scheduleDaysCollected = 0;
 var userPhoneNo = '';
 var context = {};
 
+
 /**
  * Create Watson Services.
  */
@@ -51,6 +52,7 @@ const DISCOVERY = WATSON.discovery({
   version_date: '2016-11-07'
 })
 
+
 /**
  * Create Twillio Client.
  */
@@ -59,6 +61,7 @@ const TWILLIO = require('twilio')(
   CONFIG.TwillioAuthToken
 ); 
 const TWILLIO_PHONE_NO = CONFIG.TwillioPhoneNo;
+
 
 /**
  * Create and configure the microphone.
@@ -82,6 +85,7 @@ MIC_INPUT_STREAM.on('pauseComplete', ()=> {
   }, Math.round(pauseDuration * 1000));
 });
 
+
 /**
  * Get current MLB team info from MLB Fantasy Data.
  */
@@ -95,17 +99,19 @@ function getMlbTeams() {
     }
   }
 
-  REQUEST(options)
-    .then(function (response) {
-      console.log('Retrieved MLB Teams');
-      mlbTeams = JSON.parse(response);
-      // Now get standings for all teams.
-      getMlbStandings();
-    })
-    .catch(function (err) {
-      console.log('Unable to retrieve current MLB team info. ', err);
-    })
+  return new PROMISE((resolve, reject) => {
+    REQUEST(options)
+      .then(function (response) {
+        mlbTeams = JSON.parse(response);
+        return resolve();
+      })
+      .catch(function (err) {
+        console.log('Unable to retrieve current MLB team info. ', err);
+        return reject(err);
+      })
+  })
 };
+
 
 /**
  * Get current MLB standings from MLB Fantasy Data.
@@ -120,80 +126,63 @@ function getMlbStandings() {
     }
   }
 
-  REQUEST(options)
-    .then(function (response) {
-      console.log('Retrieved MLB standings');
-      mlbStandings = JSON.parse(response);
-      // Now get schedules for all teams.
-      getMlbSchedules();
-    })
-    .catch(function (err) {
-      console.log('Unable to retrieve current MLB standings. ', err);
-    })
+  return new PROMISE((resolve, reject) => {
+    REQUEST(options)
+      .then(function (response) {
+        mlbStandings = JSON.parse(response);
+        return resolve();
+      })
+      .catch(function (err) {
+        console.log('Unable to retrieve current MLB standings. ', err);
+        return reject(err);
+      })
+  })
 };
+
 
 /**
  * Get current MLB schedules from MLB Fantasy Data. Just grab schedules
  * from today and for the next week.
  */
 function getMlbSchedules() {
-  var date = new Date();
-  date.setDate(date.getDate() + 1);
-  getMlbScheduleForDate(date);
-};
-
-/**
- * Determine if we have retrieved enough schedule dates.
- * 
- * @param {Date} date
- *   Current date.
- */
-function checkMlbSchedulesCounter(date) {
-  if (scheduleDaysCollected > 7) {
-    // We have one week of schedules for all teams, so ready to start conversation
-    mlbConversation();
-    return;
-  } else {
-    // need to get more schedule dates
-    date.setDate(date.getDate() + 1);
-    getMlbScheduleForDate(date);
-  }
-}
-
-/**
- * Get current MLB schedules for a specific day.
- *
- * @param {Date} date
- *   Current date.
- */
-function getMlbScheduleForDate(date) {
   var monthNames = [
     'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
     'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
   ];
-  month = date.getMonth();
-  day = ("0" + date.getDate()).slice(-2);
-  const options = {
-    method: 'GET',
-    uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/2017-' + 
-          monthNames[month] + '-' + day,
-    headers: {
-      'Host': 'api.fantasydata.net',
-      'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
-    }
-  }
 
-  REQUEST(options)
-    .then(function (response) {
-      console.log('Retrieved MLB schedule for ' + date);
-      mlbSchedule = mlbSchedule.concat(JSON.parse(response));
-      scheduleDaysCollected += 1;
-      checkMlbSchedulesCounter(date);
-    })
-    .catch(function (err) {
-      console.log('Unable to retrieve current MLB schedules. ', err);
-    })
+  var date = new Date();
+
+  return new PROMISE((resolve, reject) => {
+    for (let i = 0; i < 7; i++) {
+      date.setDate(date.getDate() + 1);
+      month = date.getMonth();
+      day = ("0" + date.getDate()).slice(-2);
+      const options = {
+        method: 'GET',
+        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/2017-' + 
+              monthNames[month] + '-' + day,
+        headers: {
+          'Host': 'api.fantasydata.net',
+          'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+        }
+      }
+
+      REQUEST(options)
+        .then(function (response) {
+          mlbSchedule = mlbSchedule.concat(JSON.parse(response));
+          scheduleDaysCollected += 1;
+          if (scheduleDaysCollected === 7) {
+            return resolve();
+          }
+        })
+        .catch(function (err) {
+          console.log('Unable to retrieve current MLB schedules. ', err);
+          return reject(err);
+        })
+    }
+  })
 };
+
 
 /**
  * Get current MLB standings for a specific team.
@@ -226,6 +215,7 @@ function getCurrentStandings(team) {
     return 'unknown';
   }
 };
+
 
 /**
  * Get upcoming MLB schedule for a specific team.
@@ -281,6 +271,7 @@ function getUpcomingSchedule(team) {
   }
 };
 
+
 /**
  * Convert phone number from words to numbers.
  * 
@@ -328,6 +319,7 @@ function getUserPhoneNumber(spokenPhoneNumber) {
 
   return phoneNum;
 };
+
 
 /**
  * Text team info to user.
@@ -417,6 +409,7 @@ function textTeamInfo() {
   });
 };
 
+
 /**
  * Convert speech to text.
  */
@@ -424,6 +417,7 @@ const textStream = MIC_INPUT_STREAM.pipe(
   SPEECH_TO_TEXT.createRecognizeStream({
     content_type: 'audio/l16; rate=44100; channels=2',
   })).setEncoding('utf8');
+
 
 /**
  * Get emotional tone from speech.
@@ -445,6 +439,7 @@ const getEmotion = (text) => {
   })
 };
 
+
 /**
  * Convert text to speech.
  */
@@ -465,6 +460,7 @@ const speakResponse = (text) => {
   });
 }
 
+
 /**
  * Check conversation step.
  * True if we are attempting to validate the team the user wishes to follow.
@@ -477,6 +473,7 @@ function validateTeamStep() {
   }
   return false;
 };
+
 
 /**
  * Check conversation step.
@@ -491,6 +488,7 @@ function validateEmotionStep() {
   return false;
 };
 
+
 /**
  * Check conversation step.
  * True if we are attempting to text team info to the user.
@@ -503,6 +501,7 @@ function textTeamInfoStep() {
   }
   return false;
 };
+
 
 /**
  * Watson conversation with user.
@@ -569,14 +568,40 @@ function mlbConversation() {
   });
 };
 
+
 /**
  * Begin conversation Watson conversation with user.
  */
-function startUp() {
-  // Create microphone.
-  MIC_INSTANCE.start();
-  // Generate data to be used during the conversation.
-  getMlbTeams();
+function init() {
+    // Create microphone.
+    MIC_INSTANCE.start();
+    
+    // Generate data to be used during the conversation.
+    getMlbTeams()
+      .then(function() {
+        console.log('Retrieved MLB Teams');
+      })
+      .catch(err => {
+        throw new Error('Error loading MLB team info');
+      })
+    getMlbStandings()
+      .then(function() {
+        console.log('Retrieved MLB standings');
+      })
+      .catch(err => {
+        throw new Error('Error loading MLB standings');
+      })
+    getMlbSchedules()
+      .then(function() {
+        console.log('Retrieved MLB schedules');
+      })
+      .catch(err => {
+        throw new Error('Error loading MLB schedules');
+      })
 }
 
-startUp();
+// Initialize microphone and get MLB data
+init();
+
+// Begin watson conversation.
+mlbConversation();    
