@@ -1,0 +1,582 @@
+const WATSON = require('watson-developer-cloud');
+const CONFIG = require('./config.js');
+const FS = require('fs');
+const MIC = require('mic');
+const PLAYER = require('play-sound')(opts = {});
+const PROBE = require('node-ffprobe');
+const REQUEST = require('request-promise');
+const PROMISE = require('promise');
+
+const ATTENTION_WORD = CONFIG.attentionWord;
+var mlbTeams;
+var mlbStandings;
+var mlbSchedule = [];
+var scheduleDaysCollected = 0;
+var userPhoneNo = '';
+var context = {};
+
+/**
+ * Create Watson Services.
+ */
+const SPEECH_TO_TEXT = WATSON.speech_to_text({
+  username: CONFIG.STTUsername,
+  password: CONFIG.STTPassword,
+  version: 'v1'
+});
+
+const TONE_ANALYZER = WATSON.tone_analyzer({
+  username: CONFIG.ToneUsername,
+  password: CONFIG.TonePassword,
+  version: 'v3',
+  version_date: '2016-05-19'
+});
+
+const CONVERSATION = WATSON.conversation({
+  username: CONFIG.ConUsername,
+  password: CONFIG.ConPassword,
+  version: 'v1',
+  version_date: '2016-07-11'
+});
+
+const TEXT_TO_SPEECH = WATSON.text_to_speech({
+  username: CONFIG.TTSUsername,
+  password: CONFIG.TTSPassword,
+  version: 'v1'
+});
+
+const DISCOVERY = WATSON.discovery({
+  username: CONFIG.DiscoUsername,
+  password: CONFIG.DiscoPassword,
+  version: 'v1',
+  version_date: '2016-11-07'
+})
+
+/**
+ * Create Twillio Client.
+ */
+const TWILLIO = require('twilio')(
+  CONFIG.TwillioAccountSID, 
+  CONFIG.TwillioAuthToken
+); 
+const TWILLIO_PHONE_NO = CONFIG.TwillioPhoneNo;
+
+/**
+ * Create and configure the microphone.
+ */
+const MIC_PARAMS = { 
+  rate: 44100, 
+  channels: 2, 
+  debug: false, 
+  exitOnSilence: 6
+}
+const MIC_INSTANCE = MIC(MIC_PARAMS);
+const MIC_INPUT_STREAM = MIC_INSTANCE.getAudioStream();
+
+let pauseDuration = 0;
+MIC_INPUT_STREAM.on('pauseComplete', ()=> {
+  console.log('Microphone paused for', pauseDuration, 'seconds.');
+  // Stop listening when speaker is talking.
+  setTimeout(function() {
+      MIC_INSTANCE.resume();
+      console.log('Microphone resumed.')      
+  }, Math.round(pauseDuration * 1000));
+});
+
+/**
+ * Get current MLB team info from MLB Fantasy Data.
+ */
+function getMlbTeams() {
+  const options = {
+    method: 'GET',
+    uri: 'https://api.fantasydata.net/mlb/v2/JSON/teams',
+    headers: {
+      'Host': 'api.fantasydata.net',
+      'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+    }
+  }
+
+  REQUEST(options)
+    .then(function (response) {
+      console.log('Retrieved MLB Teams');
+      mlbTeams = JSON.parse(response);
+      // Now get standings for all teams.
+      getMlbStandings();
+    })
+    .catch(function (err) {
+      console.log('Unable to retrieve current MLB team info. ', err);
+    })
+};
+
+/**
+ * Get current MLB standings from MLB Fantasy Data.
+ */
+function getMlbStandings() {
+  const options = {
+    method: 'GET',
+    uri: 'https://api.fantasydata.net/mlb/v2/JSON/Standings/2017',
+    headers: {
+      'Host': 'api.fantasydata.net',
+      'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+    }
+  }
+
+  REQUEST(options)
+    .then(function (response) {
+      console.log('Retrieved MLB standings');
+      mlbStandings = JSON.parse(response);
+      // Now get schedules for all teams.
+      getMlbSchedules();
+    })
+    .catch(function (err) {
+      console.log('Unable to retrieve current MLB standings. ', err);
+    })
+};
+
+/**
+ * Get current MLB schedules from MLB Fantasy Data. Just grab schedules
+ * from today and for the next week.
+ */
+function getMlbSchedules() {
+  var date = new Date();
+  date.setDate(date.getDate() + 1);
+  getMlbScheduleForDate(date);
+};
+
+/**
+ * Determine if we have retrieved enough schedule dates.
+ * 
+ * @param {Date} date
+ *   Current date.
+ */
+function checkMlbSchedulesCounter(date) {
+  if (scheduleDaysCollected > 7) {
+    // We have one week of schedules for all teams, so ready to start conversation
+    mlbConversation();
+    return;
+  } else {
+    // need to get more schedule dates
+    date.setDate(date.getDate() + 1);
+    getMlbScheduleForDate(date);
+  }
+}
+
+/**
+ * Get current MLB schedules for a specific day.
+ *
+ * @param {Date} date
+ *   Current date.
+ */
+function getMlbScheduleForDate(date) {
+  var monthNames = [
+    'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL',
+    'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+  ];
+  month = date.getMonth();
+  day = ("0" + date.getDate()).slice(-2);
+  const options = {
+    method: 'GET',
+    uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/2017-' + 
+          monthNames[month] + '-' + day,
+    headers: {
+      'Host': 'api.fantasydata.net',
+      'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+    }
+  }
+
+  REQUEST(options)
+    .then(function (response) {
+      console.log('Retrieved MLB schedule for ' + date);
+      mlbSchedule = mlbSchedule.concat(JSON.parse(response));
+      scheduleDaysCollected += 1;
+      checkMlbSchedulesCounter(date);
+    })
+    .catch(function (err) {
+      console.log('Unable to retrieve current MLB schedules. ', err);
+    })
+};
+
+/**
+ * Get current MLB standings for a specific team.
+ *
+ * @param {String} team
+ *   Team to get standings for.
+ */
+function getCurrentStandings(team) {
+  if (mlbStandings) {
+    let places = ['first', 'second', 'third', 'fourth', 'last'];
+    let placeIdx;
+    let place = '';
+    let div = '';
+    for (let i = 0; i < mlbStandings.length; i++) {
+      let currentDiv = mlbStandings[i].League + mlbStandings[i].Division;
+      if (div === '' || div !== currentDiv) {
+        div = currentDiv;
+        placeIdx = 0;
+      } else {
+        placeIdx++;
+      }
+      place = places[placeIdx]
+
+      let compTeam = mlbStandings[i].Name;
+      if (team.indexOf(compTeam) > -1) {
+        return place;
+      }
+    }
+
+    return 'unknown';
+  }
+};
+
+/**
+ * Get upcoming MLB schedule for a specific team.
+ * 
+ * @param {String} team
+ *   Team to get schedule for.
+ */
+function getUpcomingSchedule(team) {
+  // First determine abbreviated team name required for looking at schedules.
+  var teamKey = '';
+  if (mlbTeams) {
+    for (let i = 0; i < mlbTeams.length; i++) {
+      let compTeam = mlbTeams[i].Name;
+      if (team.indexOf(compTeam) > -1) {
+        teamKey = mlbTeams[i].Key;
+        break;
+      }
+    }
+  }
+
+  var schedString = 'No schedule data found for ' + team;
+  if (teamKey && mlbSchedule) {
+    var foundDate = false;
+    var gameCount = 0;
+    var date = new Date();
+    date.setDate(date.getDate() + 1);
+    schedString = 'Upcoming schedule for the ' + team + ':\n';
+    for (let i = 0; i < mlbSchedule.length; i++) {
+      // Limit schedule to just next 5 games.
+      if ((foundDate) || 
+          (mlbSchedule[i].Day.substring(5,10) === 
+           date.toJSON().substring(5,10))) {
+        foundDate = true;
+        var game = '';
+        if (mlbSchedule[i].AwayTeam === teamKey) {
+          game = mlbSchedule[i].Day.substring(5,10) + 
+            ' @ ' + mlbSchedule[i].HomeTeam + '\n';
+        } else if (mlbSchedule[i].HomeTeam === teamKey) {
+          game = mlbSchedule[i].Day.substring(5,10) + 
+            ' vs. ' + mlbSchedule[i].AwayTeam + '\n';
+        }
+        if (game) {
+          schedString = schedString.concat(game);
+          gameCount += 1;
+          if (gameCount === 5) {
+            break;
+          }
+        }
+      }
+    }
+
+    return schedString;
+  }
+};
+
+/**
+ * Convert phone number from words to numbers.
+ * 
+ * @param {String} spokenPhoneNumber
+ *   Text of spoken phone number that needs to be converted to digits.
+ */
+function getUserPhoneNumber(spokenPhoneNumber) {
+  // Spoken phone number is a space seperated string.
+  var phoneNum = '+1';
+  words = spokenPhoneNumber.split(' ');
+  for (let i = 0; i < words.length; i++) {
+    switch(words[i]) {
+      case 'one':
+        phoneNum = phoneNum + '1';
+        break;
+      case 'two':
+        phoneNum = phoneNum + '2';
+        break;
+      case 'three':
+        phoneNum = phoneNum + '3';
+        break;
+      case 'four':
+        phoneNum = phoneNum + '4';
+        break;
+      case 'five':
+        phoneNum = phoneNum + '5';
+        break;
+      case 'six':
+        phoneNum = phoneNum + '6';
+        break;
+      case 'seven':
+        phoneNum = phoneNum + '7';
+        break;
+      case 'eight':
+        phoneNum = phoneNum + '8';
+        break;
+      case 'nine':
+        phoneNum = phoneNum + '9';
+        break;
+      case 'zero':
+        phoneNum = phoneNum + '0';
+        break;
+    }
+  }
+
+  return phoneNum;
+};
+
+/**
+ * Text team info to user.
+ * This includes schedule, and Watson headlines
+ */
+function textTeamInfo() {
+  // Validate phone number is legitimate.
+  if (context.text_sent != 'success') {
+    // Only use number if needed (first time or last time was with invalid #).
+    textPhoneNo = getUserPhoneNumber(context.phoneno);
+  }
+
+  if (textPhoneNo.length != 12) {
+    console.log('Unable to text: bad phone number: ', textPhoneNo);
+    context.text_sent = 'failure';      
+    return;
+  }
+
+  // Query for headlines from watson news.
+  let headlines = [];
+  const numHeadlines = 2;
+
+  DISCOVERY.query({
+    environment_id: CONFIG.DiscoEnvironmentId,
+    collection_id: CONFIG.DiscoCollectionId,
+    query: context.my_team + ' baseball', 
+    count: 5
+  }, (err, response) => {
+    if (response.results) {
+      for (let i = 0; i < response.results.length; i++) {
+        // Make sure headline is not a duplicate, which Watson news 
+        // does on occasion.
+        headline = response.results[i].title + ' - ' + response.results[i].url;
+        var dup = false;
+        for (let j = 0; j < headlines.length; j++) {
+          if (headline === headlines[j]) {
+            dup = true;
+            break;
+          }
+        }
+        if (! dup) {
+          headlines.push(headline);
+          if (headlines.length >= numHeadlines) {
+            break; 
+          }          
+        }
+      }
+    }
+
+    // Get next 5 game schedule for team.
+    sched = getUpcomingSchedule(context.my_team);
+
+    // Text schedule to user.
+    context.text_sent = 'success';      
+    TWILLIO.messages.create({     
+        to: textPhoneNo,     
+        from: TWILLIO_PHONE_NO,     
+        body: sched, 
+    }, function(err, message) {
+        console.log(message.sid); 
+        // Now text each headline to user.
+        for (let i = 0; i < headlines.length; i++) {
+          TWILLIO.messages.create({     
+              to: textPhoneNo,     
+              from: TWILLIO_PHONE_NO,     
+              body: headlines[i],
+          }, function(err, message) {
+              console.log(message.sid); 
+          });
+      }
+    });
+
+    // Tell user text has been sent.
+    console.log('Schedule and headlines have been sent');
+    console.log('before call - context: ', context);
+    CONVERSATION.message({
+      workspace_id: CONFIG.ConWorkspace,
+      input: {'text': ''},
+      context: context
+    }, (err, response) => {
+      context = response.context;
+      console.log('after call - context: ', context);
+      watsonResponse = response.output.text[0];
+      speakResponse(watsonResponse);
+      console.log('Watson says:', watsonResponse);
+    });
+  });
+};
+
+/**
+ * Convert speech to text.
+ */
+const textStream = MIC_INPUT_STREAM.pipe(
+  SPEECH_TO_TEXT.createRecognizeStream({
+    content_type: 'audio/l16; rate=44100; channels=2',
+  })).setEncoding('utf8');
+
+/**
+ * Get emotional tone from speech.
+ */
+const getEmotion = (text) => {
+  return new Promise((resolve) => {
+    let maxScore = 0;
+    let emotion = null;
+    TONE_ANALYZER.tone({text: text}, (err, tone) => {
+      let tones = tone.document_tone.tone_categories[0].tones;
+      for (let i=0; i<tones.length; i++) {
+        if (tones[i].score > maxScore){
+          maxScore = tones[i].score;
+          emotion = tones[i].tone_id;
+        }
+      }
+      resolve({emotion, maxScore});
+    })
+  })
+};
+
+/**
+ * Convert text to speech.
+ */
+const speakResponse = (text) => {
+  const params = {
+    text: text,
+    voice: CONFIG.voice,
+    accept: 'audio/wav'
+  };
+  TEXT_TO_SPEECH.synthesize(params)
+  .pipe(FS.createWriteStream('output.wav'))
+  .on('close', () => {
+    PROBE('output.wav', function(err, probeData) {
+      pauseDuration = probeData.format.duration + 0.2;
+      MIC_INSTANCE.pause();
+      PLAYER.play('output.wav');
+    });
+  });
+}
+
+/**
+ * Check conversation step.
+ * True if we are attempting to validate the team the user wishes to follow.
+ */
+function validateTeamStep() {
+  if (context && 
+      context.system && 
+      context.system.dialog_stack[0] === 'Validate Team') {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Check conversation step.
+ * True if we are attempting to validate the users team sentiment tone.
+ */
+function validateEmotionStep() {
+  if (context && 
+      context.system && 
+      context.system.dialog_stack[0] === 'Validate Emotion') {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Check conversation step.
+ * True if we are attempting to text team info to the user.
+ */
+function textTeamInfoStep() {
+  if (context && 
+      context.system && 
+      context.system.dialog_stack[0] === 'Text Team Info') {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Watson conversation with user.
+ */
+function mlbConversation() {
+  console.log('TJ is listening, you may speak now.');
+  speakResponse('Hi there, I am awake.');
+
+  textStream.on('data', (user_speech_text) => {
+    userSpeechText = user_speech_text.toLowerCase();
+    console.log('\n\nWatson hears: ', user_speech_text);
+    console.log('before call - context: ', context);
+    CONVERSATION.message({
+      workspace_id: CONFIG.ConWorkspace,
+      input: {'text': user_speech_text},
+      context: context
+    }, (err, response) => {
+      context = response.context;
+      console.log('after call - context: ', context);
+
+      watson_response =  response.output.text[0];
+      if (watson_response) {
+        speakResponse(watson_response);
+      }
+      console.log('Watson says:', watson_response);
+
+      if (validateEmotionStep()) {
+        // User has expressed sentiment about team.
+        getEmotion(context.emotion).then((detectedEmotion) => {
+          context.emotion = detectedEmotion.emotion;
+          console.log('before call - context: ', context);
+          CONVERSATION.message({
+            workspace_id: CONFIG.ConWorkspace,
+            input: {'text': userSpeechText},
+            context: context
+          }, (err, response) => {
+            context = response.context;
+            console.log('after call - context: ', context);
+            watson_response =  response.output.text[0];
+            speakResponse(watson_response);
+            console.log('Watson says:', watson_response);
+          });
+        });
+      } else if (validateTeamStep()) {
+        // User has identified which team they want to follow.
+        context.standings = getCurrentStandings(context.my_team);
+        console.log('before call - context: ', context);
+        CONVERSATION.message({
+          workspace_id: CONFIG.ConWorkspace,
+          input: {'text': userSpeechText},
+          context: context
+        }, (err, response) => {
+          context = response.context;
+          console.log('after call - context: ', context);
+          watson_response =  response.output.text[0];
+          speakResponse(watson_response);
+          console.log('Watson says:', watson_response);
+        });
+      } else if (textTeamInfoStep()) {
+        // User has requested that team info be texted to them.
+        textTeamInfo();
+      }
+    });
+  });
+};
+
+/**
+ * Begin conversation Watson conversation with user.
+ */
+function startUp() {
+  // Create microphone.
+  MIC_INSTANCE.start();
+  // Generate data to be used during the conversation.
+  getMlbTeams();
+}
+
+startUp();

@@ -1,0 +1,23 @@
+{
+  "name": "tjbot-sports-buddy",
+  "version": "1.0.0",
+  "description": "Converse with TJBot about sports.",
+  "main": "run.js",
+  "scripts": {
+    "start": "node run.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:IBM/tjbot-sports-buddy.git"
+  },
+  "author": "Rich Hagarty",
+  "dependencies": {
+    "mic": "^2.1.1",
+    "node-ffprobe": "^1.2.2",
+    "play-sound": "^1.1.1",
+    "prompt": "^1.0.0",
+    "raspicam": "git+https://github.com/troyth/node-raspicam.git",
+    "watson-developer-cloud": "^2.2.0"
+  }
+}
