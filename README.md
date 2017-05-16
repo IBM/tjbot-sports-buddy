@@ -16,7 +16,7 @@ When the reader has completed this journey, they will understand how to:
 * Use Watson Tone Analyzer to determine your sentiment about your favorite teams
 * Use Watson Discovery News to find news articles about your favorite teams 
 * Query 3rd party data sources to get the latest Major League Baseball (MLB) data
-* Use Twillio to send SMS text messages with team schedules and news article links
+* Use Twilio to send SMS text messages with team schedules and news article links
 
 ARCHITECTURE PICTURE
 
@@ -30,7 +30,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 - Bluemix Watson Text to Speech
 - Bluemix Watson Speech to Text
 - Bluemix Watson Tone Analyzer
-- Twillio 
+- Twilio 
 - MLB Fantasy Data service
 - Node.js
 
@@ -91,7 +91,7 @@ workspace and select **View details**. Save this ID for later.
 
 Launch the **Watson Discovery** tool. 
 
-## 5. Configure Twillio
+## 5. Configure Twilio
 
 ## 6. Configure MLB Fantasy Data Service
 
@@ -110,7 +110,7 @@ In the Bluemix dashboard find the App that was created. Click on ``Runtime`` on 
 
 Update the following environment variables:
 
-  * Twillio
+  * Twilio
   * MLB Fantasy Data
 
 Save the new values and restart the application, watch the logs for errors.

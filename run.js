@@ -56,13 +56,13 @@ const DISCOVERY = WATSON.discovery({
 
 
 /**
- * Create Twillio Client.
+ * Create Twilio Client.
  */
-const TWILLIO = require('twilio')(
-  CONFIG.TwillioAccountSID, 
-  CONFIG.TwillioAuthToken
+const TWILIO = require('twilio')(
+  CONFIG.TwilioAccountSID, 
+  CONFIG.TwilioAuthToken
 ); 
-const TWILLIO_PHONE_NO = CONFIG.TwillioPhoneNo;
+const TWILIO_PHONE_NO = CONFIG.TwilioPhoneNo;
 
 
 /**
@@ -348,6 +348,8 @@ function textTeamInfo() {
     return;
   }
 
+  console.log('Will send text to: ', textPhoneNo);
+
   // Query for headlines from watson news.
   let headlines = [];
   const numHeadlines = 2;
@@ -384,18 +386,18 @@ function textTeamInfo() {
 
     // Text schedule to user.
     context.text_sent = 'success';      
-    TWILLIO.messages.create({     
+    TWILIO.messages.create({     
         to: textPhoneNo,     
-        from: TWILLIO_PHONE_NO,     
+        from: TWILIO_PHONE_NO,     
         body: sched, 
     }, function(err, message) {
         console.log(message.sid); 
         // Now text each headline to user.
         for (let i = 0; i < headlines.length; i++) {
           /* jshint loopfunc: true */
-          TWILLIO.messages.create({     
+          TWILIO.messages.create({     
               to: textPhoneNo,     
-              from: TWILLIO_PHONE_NO,     
+              from: TWILIO_PHONE_NO,     
               body: headlines[i],
           }, function(err, message) {
               console.log(message.sid); 
