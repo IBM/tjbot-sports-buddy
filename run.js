@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 const WATSON = require('watson-developer-cloud');
 const CONFIG = require('./config.js');
 const FS = require('fs');
@@ -50,7 +52,7 @@ const DISCOVERY = WATSON.discovery({
   password: CONFIG.DiscoPassword,
   version: 'v1',
   version_date: '2016-11-07'
-})
+});
 
 
 /**
@@ -64,6 +66,12 @@ const TWILLIO_PHONE_NO = CONFIG.TwillioPhoneNo;
 
 
 /**
+ * Retrieve key to 3rd party MLB data
+ */
+const MLB_DATA_KEY = CONFIG.MLBFantasySubscriptionKey;
+
+
+/**
  * Create and configure the microphone.
  */
 const MIC_PARAMS = { 
@@ -71,7 +79,7 @@ const MIC_PARAMS = {
   channels: 2, 
   debug: false, 
   exitOnSilence: 6
-}
+};
 const MIC_INSTANCE = MIC(MIC_PARAMS);
 const MIC_INPUT_STREAM = MIC_INSTANCE.getAudioStream();
 
@@ -81,7 +89,7 @@ MIC_INPUT_STREAM.on('pauseComplete', ()=> {
   // Stop listening when speaker is talking.
   setTimeout(function() {
       MIC_INSTANCE.resume();
-      console.log('Microphone resumed.')      
+      console.log('Microphone resumed.');     
   }, Math.round(pauseDuration * 1000));
 });
 
@@ -95,9 +103,9 @@ function getMlbTeams() {
     uri: 'https://api.fantasydata.net/mlb/v2/JSON/teams',
     headers: {
       'Host': 'api.fantasydata.net',
-      'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+      'Ocp-Apim-Subscription-Key': MLB_DATA_KEY
     }
-  }
+  };
 
   return new PROMISE((resolve, reject) => {
     REQUEST(options)
@@ -108,9 +116,9 @@ function getMlbTeams() {
       .catch(function (err) {
         console.log('Unable to retrieve current MLB team info. ', err);
         return reject(err);
-      })
-  })
-};
+      });
+  });
+}
 
 
 /**
@@ -122,9 +130,9 @@ function getMlbStandings() {
     uri: 'https://api.fantasydata.net/mlb/v2/JSON/Standings/2017',
     headers: {
       'Host': 'api.fantasydata.net',
-      'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+      'Ocp-Apim-Subscription-Key': MLB_DATA_KEY
     }
-  }
+  };
 
   return new PROMISE((resolve, reject) => {
     REQUEST(options)
@@ -135,9 +143,9 @@ function getMlbStandings() {
       .catch(function (err) {
         console.log('Unable to retrieve current MLB standings. ', err);
         return reject(err);
-      })
-  })
-};
+      });
+  });
+}
 
 
 /**
@@ -154,6 +162,7 @@ function getMlbSchedules() {
 
   return new PROMISE((resolve, reject) => {
     for (let i = 0; i < 7; i++) {
+      /* jshint loopfunc: true */
       date.setDate(date.getDate() + 1);
       month = date.getMonth();
       day = ("0" + date.getDate()).slice(-2);
@@ -163,9 +172,9 @@ function getMlbSchedules() {
               monthNames[month] + '-' + day,
         headers: {
           'Host': 'api.fantasydata.net',
-          'Ocp-Apim-Subscription-Key': '129aba9565464921865270aa994e31df'
+          'Ocp-Apim-Subscription-Key': MLB_DATA_KEY
         }
-      }
+      };
 
       REQUEST(options)
         .then(function (response) {
@@ -178,10 +187,10 @@ function getMlbSchedules() {
         .catch(function (err) {
           console.log('Unable to retrieve current MLB schedules. ', err);
           return reject(err);
-        })
+        });
     }
-  })
-};
+  });
+}
 
 
 /**
@@ -190,23 +199,23 @@ function getMlbSchedules() {
  * @param {String} team
  *   Team to get standings for.
  */
-function getCurrentStandings(team) {
-  if (mlbStandings) {
+function getCurrentStandings(team, standingsData) {
+  if (standingsData) {
     let places = ['first', 'second', 'third', 'fourth', 'last'];
     let placeIdx;
     let place = '';
     let div = '';
-    for (let i = 0; i < mlbStandings.length; i++) {
-      let currentDiv = mlbStandings[i].League + mlbStandings[i].Division;
+    for (let i = 0; i < standingsData.length; i++) {
+      let currentDiv = standingsData[i].League + standingsData[i].Division;
       if (div === '' || div !== currentDiv) {
         div = currentDiv;
         placeIdx = 0;
       } else {
         placeIdx++;
       }
-      place = places[placeIdx]
+      place = places[placeIdx];
 
-      let compTeam = mlbStandings[i].Name;
+      let compTeam = standingsData[i].Name;
       if (team.indexOf(compTeam) > -1) {
         return place;
       }
@@ -214,7 +223,8 @@ function getCurrentStandings(team) {
 
     return 'unknown';
   }
-};
+}
+exports.getCurrentStandings = getCurrentStandings;
 
 
 /**
@@ -269,7 +279,7 @@ function getUpcomingSchedule(team) {
 
     return schedString;
   }
-};
+}
 
 
 /**
@@ -318,8 +328,8 @@ function getUserPhoneNumber(spokenPhoneNumber) {
   }
 
   return phoneNum;
-};
-
+}
+exports.getUserPhoneNumber = getUserPhoneNumber;  // export for mocha unit tests
 
 /**
  * Text team info to user.
@@ -382,6 +392,7 @@ function textTeamInfo() {
         console.log(message.sid); 
         // Now text each headline to user.
         for (let i = 0; i < headlines.length; i++) {
+          /* jshint loopfunc: true */
           TWILLIO.messages.create({     
               to: textPhoneNo,     
               from: TWILLIO_PHONE_NO,     
@@ -407,7 +418,7 @@ function textTeamInfo() {
       console.log('Watson says:', watsonResponse);
     });
   });
-};
+}
 
 
 /**
@@ -435,8 +446,8 @@ const getEmotion = (text) => {
         }
       }
       resolve({emotion, maxScore});
-    })
-  })
+    });
+  });
 };
 
 
@@ -458,7 +469,7 @@ const speakResponse = (text) => {
       PLAYER.play('output.wav');
     });
   });
-}
+};
 
 
 /**
@@ -472,7 +483,7 @@ function validateTeamStep() {
     return true;
   }
   return false;
-};
+}
 
 
 /**
@@ -486,7 +497,7 @@ function validateEmotionStep() {
     return true;
   }
   return false;
-};
+}
 
 
 /**
@@ -500,7 +511,7 @@ function textTeamInfoStep() {
     return true;
   }
   return false;
-};
+}
 
 
 /**
@@ -547,7 +558,7 @@ function mlbConversation() {
         });
       } else if (validateTeamStep()) {
         // User has identified which team they want to follow.
-        context.standings = getCurrentStandings(context.my_team);
+        context.standings = getCurrentStandings(context.my_team, mlbStandings);
         console.log('before call - context: ', context);
         CONVERSATION.message({
           workspace_id: CONFIG.ConWorkspace,
@@ -566,7 +577,7 @@ function mlbConversation() {
       }
     });
   });
-};
+}
 
 
 /**
@@ -583,21 +594,21 @@ function init() {
       })
       .catch(err => {
         throw new Error('Error loading MLB team info');
-      })
+      });
     getMlbStandings()
       .then(function() {
         console.log('Retrieved MLB standings');
       })
       .catch(err => {
         throw new Error('Error loading MLB standings');
-      })
+      });
     getMlbSchedules()
       .then(function() {
         console.log('Retrieved MLB schedules');
       })
       .catch(err => {
         throw new Error('Error loading MLB schedules');
-      })
+      });
 }
 
 // Initialize microphone and get MLB data
