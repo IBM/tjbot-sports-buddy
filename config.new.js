@@ -31,10 +31,10 @@ exports.DiscoPassword = '';
 exports.DiscoEnvironmentId = '';
 exports.DiscoCollectionId = '';
 
-// Twillio account data
-exports.TwillioAccountSID = ''; 
-exports.TwillioAuthToken = ''; 
-exports.TwillioPhoneNo = '';
+// Twilio account data
+exports.TwilioAccountSID = ''; 
+exports.TwilioAuthToken = ''; 
+exports.TwilioPhoneNo = '';
 
 // MLB Fantasy Sports Data
 exports.MLBFantasySubscriptionKey = '';
