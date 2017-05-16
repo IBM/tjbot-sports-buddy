@@ -35,3 +35,6 @@ exports.DiscoCollectionId = '';
 exports.TwillioAccountSID = ''; 
 exports.TwillioAuthToken = ''; 
 exports.TwillioPhoneNo = '';
+
+// MLB Fantasy Sports Data
+exports.MLBFantasySubscriptionKey = '';

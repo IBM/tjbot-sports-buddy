@@ -5,7 +5,7 @@
   "main": "run.js",
   "scripts": {
     "start": "node run.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/jshint/bin/jshint run.js; ./node_modules/.bin/mocha tests"
   },
   "repository": {
     "type": "git",
@@ -14,10 +14,16 @@
   "author": "Rich Hagarty",
   "dependencies": {
     "mic": "^2.1.1",
+    "mocha": "^3.4.1",
     "node-ffprobe": "^1.2.2",
     "play-sound": "^1.1.1",
     "prompt": "^1.0.0",
     "raspicam": "git+https://github.com/troyth/node-raspicam.git",
     "watson-developer-cloud": "^2.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jshint": "^2.9.4",
+    "mocha": "*"
   }
 }
