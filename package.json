@@ -5,7 +5,7 @@
   "main": "run.js",
   "scripts": {
     "start": "node run.js",
-    "test": "./node_modules/jshint/bin/jshint run.js; ./node_modules/.bin/mocha tests"
+    "test": "./tests/run_tests.sh"
   },
   "repository": {
     "type": "git",
