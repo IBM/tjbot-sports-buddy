@@ -11,9 +11,13 @@ const PROMISE = require('promise');
 
 const ATTENTION_WORD = CONFIG.attentionWord;
 var mlbTeams;
+var mlbTeamsRetrieved = false;
 var mlbStandings;
+var mlbStandingsRetrieved = false;
+var mlbScheduleDates = [];
 var mlbSchedule = [];
 var scheduleDaysCollected = 0;
+var mlbScheduleRetrieved = false;
 var userPhoneNo = '';
 var context = {};
 
@@ -178,7 +182,11 @@ function getMlbSchedules() {
 
       REQUEST(options)
         .then(function (response) {
-          mlbSchedule = mlbSchedule.concat(JSON.parse(response));
+          daySchedule = JSON.parse(response);
+          console.log('Retrieved schedule for date: ' + daySchedule[0].Day);
+          // Save each date in array so that they can be sorted 
+          // after all dates are retrieved.
+          mlbScheduleDates[mlbScheduleDates.length] = daySchedule;
           scheduleDaysCollected += 1;
           if (scheduleDaysCollected === 7) {
             return resolve();
@@ -190,6 +198,28 @@ function getMlbSchedules() {
         });
     }
   });
+}
+
+
+/**
+ * Sort the MLB schedule by date. This is needed because each day is
+ * requested separately, and are returned in random order.
+ */
+function sortSchedule() {
+  var date = new Date();
+  var daysProcessed = 0;
+  
+  while (daysProcessed < 7) {
+    date.setDate(date.getDate() + 1);
+    for (let i = 0; i < mlbScheduleDates.length; i++) {
+      if (mlbScheduleDates[i][0].Day.substring(5,10) === 
+           date.toJSON().substring(5,10)) {
+        mlbSchedule = mlbSchedule.concat(mlbScheduleDates[i]);
+        daysProcessed += 1;
+        break;
+      }
+    }
+  }
 }
 
 
@@ -248,35 +278,38 @@ function getUpcomingSchedule(team) {
 
   var schedString = 'No schedule data found for ' + team;
   if (teamKey && mlbSchedule) {
-    var foundDate = false;
     var gameCount = 0;
     var date = new Date();
-    date.setDate(date.getDate() + 1);
     schedString = 'Upcoming schedule for the ' + team + ':\n';
-    for (let i = 0; i < mlbSchedule.length; i++) {
-      // Limit schedule to just next 5 games.
-      if ((foundDate) || 
-          (mlbSchedule[i].Day.substring(5,10) === 
-           date.toJSON().substring(5,10))) {
-        foundDate = true;
-        var game = '';
-        if (mlbSchedule[i].AwayTeam === teamKey) {
-          game = mlbSchedule[i].Day.substring(5,10) + 
-            ' @ ' + mlbSchedule[i].HomeTeam + '\n';
-        } else if (mlbSchedule[i].HomeTeam === teamKey) {
-          game = mlbSchedule[i].Day.substring(5,10) + 
-            ' vs. ' + mlbSchedule[i].AwayTeam + '\n';
-        }
-        if (game) {
-          schedString = schedString.concat(game);
-          gameCount += 1;
-          if (gameCount === 5) {
+    while (gameCount < 5) {
+      date.setDate(date.getDate() + 1);
+      var foundDate = false;
+      for (let i = 0; i < mlbSchedule.length; i++) {
+        // Limit schedule to just next 5 games.
+        if ((foundDate) || 
+            (mlbSchedule[i].Day.substring(5,10) === 
+            date.toJSON().substring(5,10))) {
+          foundDate = true;
+          var game = '';
+          if (mlbSchedule[i].AwayTeam === teamKey) {
+            game = mlbSchedule[i].DateTime.substring(5,10) +
+              ' ' + mlbSchedule[i].DateTime.substring(11,16) +  
+              ' @ ' + mlbSchedule[i].HomeTeam + '\n';
+          } else if (mlbSchedule[i].HomeTeam === teamKey) {
+            game = mlbSchedule[i].DateTime.substring(5,10) + 
+              ' ' + mlbSchedule[i].DateTime.substring(11,16) +  
+              ' vs. ' + mlbSchedule[i].AwayTeam + '\n';
+          }
+          if (game) {
+            schedString = schedString.concat(game);
+            gameCount += 1;
             break;
           }
         }
       }
     }
 
+    console.log("schedString " + schedString);
     return schedString;
   }
 }
@@ -520,7 +553,7 @@ function textTeamInfoStep() {
  * Watson conversation with user.
  */
 function mlbConversation() {
-  console.log('TJ is listening, you may speak now.');
+  console.log('TJBot is listening, you may speak now.');
   speakResponse('Hi there, I am awake.');
 
   textStream.on('data', (user_speech_text) => {
@@ -583,16 +616,15 @@ function mlbConversation() {
 
 
 /**
- * Begin conversation Watson conversation with user.
+ * Load all MLB data and start conversation when completed.
  */
 function init() {
-    // Create microphone.
-    MIC_INSTANCE.start();
-    
     // Generate data to be used during the conversation.
     getMlbTeams()
       .then(function() {
         console.log('Retrieved MLB Teams');
+        mlbTeamsRetrieved = true;
+        startConversationIfReady();
       })
       .catch(err => {
         throw new Error('Error loading MLB team info');
@@ -600,6 +632,8 @@ function init() {
     getMlbStandings()
       .then(function() {
         console.log('Retrieved MLB standings');
+        mlbStandingsRetrieved = true;
+        startConversationIfReady();
       })
       .catch(err => {
         throw new Error('Error loading MLB standings');
@@ -607,14 +641,28 @@ function init() {
     getMlbSchedules()
       .then(function() {
         console.log('Retrieved MLB schedules');
+        sortSchedule();
+        mlbScheduleRetrieved = true;
+        startConversationIfReady();
       })
       .catch(err => {
         throw new Error('Error loading MLB schedules');
       });
 }
 
-// Initialize microphone and get MLB data
-init();
 
-// Begin watson conversation.
-mlbConversation();    
+/**
+ * Start the conversation once all MLB data is loaded.
+ */
+function startConversationIfReady() {
+  if (mlbTeamsRetrieved && mlbStandingsRetrieved && mlbScheduleRetrieved) {
+    // Initialize microphone    
+    MIC_INSTANCE.start();
+
+    // Begin watson conversation.
+    mlbConversation();    
+  }  
+}
+
+// Start by loading MLB data
+init();
