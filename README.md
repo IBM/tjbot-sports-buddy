@@ -1,5 +1,3 @@
-# tjbot-sports-buddy
-
 [![Build Status](https://travis-ci.org/IBM/tjbot-sports-buddy.svg?branch=master)](https://travis-ci.org/IBM/tjbot-sports-buddy)
 
 # Build a TJBot using Watson Services to talk about sports
@@ -18,7 +16,7 @@ When the reader has completed this journey, they will understand how to:
 * Query 3rd party data sources to get the latest Major League Baseball (MLB) data
 * Use Twilio to send SMS text messages with team schedules and news article links
 
-ARCHITECTURE PICTURE
+![](doc/source/images/architecture.png)
 
 ### With Watson
 
@@ -64,28 +62,37 @@ Create the following services:
 
   * [**Watson Conversation**](https://console.ng.bluemix.net/catalog/services/conversation)
   * [**Watson Discovery**](https://console.ng.bluemix.net/catalog/services/discovery)
-  * [**Cloudant NoSQL DB**](https://console.ng.bluemix.net/catalog/services/cloudant-nosql-db/)
+  * [**Watson Text to Speech**](https://console.ng.bluemix.net/catalog/services/text-to-speech/)
+  * [**Watson Speech to Text**](https://console.ng.bluemix.net/catalog/services/speech-to-text/)
+  * [**Watson Tone Analyzer**](https://console.ng.bluemix.net/catalog/services/tone-analyzer/)
+
 
 ## 3. Configure Watson Conversation
 
 Launch the **Watson Conversation** tool. Use the **import** icon button on the right
 
+<!--
 <p align="center">
   <img width="400" height="55" src="doc/source/images/import_conversation_workspace.png">
 </p>
+-->
 
 Find the local version of [`data/workspace.json`](data/workspace.json) and select
 **Import**. Find the **Workspace ID** by clicking on the context menu of the new
 workspace and select **View details**. Save this ID for later.
 
+<!--
 <p align="center">
   <img width="400" height="250" src="doc/source/images/open_conversation_menu.png">
 </p>
+-->
 
 *Optionally*, to view the conversation dialog select the workspace and choose the
 **Dialog** tab, here's a snippet of the dialog:
 
+<!--
 ![](doc/source/images/dialog.png)
+-->
 
 ## 4. Configure Watson Discovery
 
@@ -95,7 +102,7 @@ Launch the **Watson Discovery** tool.
 
 ## 6. Configure MLB Fantasy Data Service
 
-https://fantasydata.com
+Use [https://fantasydata.com](https://fantasydata.com)
 
 ## 6. Run the application
 
@@ -106,7 +113,9 @@ quite all of it. We have to update a few environment variables.
 
 In the Bluemix dashboard find the App that was created. Click on ``Runtime`` on the menu and navigate to the ``Environment variables`` tab.
 
+<!--
 ![](doc/source/images/env_vars.png)
+-->
 
 Update the following environment variables:
 
@@ -132,9 +141,9 @@ $ node run.js
 
 # Sample output
 
-
-# Troubleshooting
-
+<!--
+Maybe add a transcript here?
+-->
 
 # License
 
