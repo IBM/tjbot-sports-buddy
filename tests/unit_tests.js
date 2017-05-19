@@ -21,7 +21,7 @@ describe('Get Current Standings for Team', function() {
       { Name: 'Royals', League: 'AL', Division: 'Central' }
       ];
     var standing = tjbot.getCurrentStandings('Minnesota Twins', mlbStandings);
-    expect(standing).to.equal('last');
+    expect(standing).to.equal('first');
     var standing = tjbot.getCurrentStandings('Detroit Tigers', mlbStandings);
     expect(standing).to.equal('third');
     var standing = tjbot.getCurrentStandings('Kansas City Royals', mlbStandings);
