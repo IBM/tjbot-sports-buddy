@@ -69,7 +69,7 @@ const TWILIO = require('twilio')(
 const TWILIO_PHONE_NO = CONFIG.TwilioPhoneNo;
 // If phone number found in config file, use it.
 if (CONFIG.UserPhoneNo) {
-  textPhoneNo = CONFIG.UserPhoneNo
+  textPhoneNo = CONFIG.UserPhoneNo;
   context.text_sent = 'success';
 }
 
