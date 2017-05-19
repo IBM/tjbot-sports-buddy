@@ -18,7 +18,7 @@ var mlbScheduleDates = [];
 var mlbSchedule = [];
 var scheduleDaysCollected = 0;
 var mlbScheduleRetrieved = false;
-var userPhoneNo = '';
+var textPhoneNo = '';
 var context = {};
 
 
@@ -67,6 +67,11 @@ const TWILIO = require('twilio')(
   CONFIG.TwilioAuthToken
 ); 
 const TWILIO_PHONE_NO = CONFIG.TwilioPhoneNo;
+// If phone number found in config file, use it.
+if (CONFIG.UserPhoneNo) {
+  textPhoneNo = CONFIG.UserPhoneNo;
+  context.text_sent = 'success';
+}
 
 
 /**
@@ -440,14 +445,14 @@ function textTeamInfo() {
 
     // Tell user text has been sent.
     console.log('Schedule and headlines have been sent');
-    console.log('before call - context: ', context);
+    printContext('before call 4:');
     CONVERSATION.message({
       workspace_id: CONFIG.ConWorkspace,
       input: {'text': ''},
       context: context
     }, (err, response) => {
       context = response.context;
-      console.log('after call - context: ', context);
+      printContext('after call 4:');
       watsonResponse = response.output.text[0];
       speakResponse(watsonResponse);
       console.log('Watson says:', watsonResponse);
@@ -470,8 +475,8 @@ const textStream = MIC_INPUT_STREAM.pipe(
  */
 const getEmotion = (text) => {
   return new Promise((resolve) => {
-    let maxScore = 0;
-    let emotion = null;
+    let maxScore = 0.01;
+    let emotion = 'default';
     TONE_ANALYZER.tone({text: text}, (err, tone) => {
       let tones = tone.document_tone.tone_categories[0].tones;
       for (let i=0; i<tones.length; i++) {
@@ -550,6 +555,35 @@ function textTeamInfoStep() {
 
 
 /**
+ * Log Watson Conversation context values..
+ * 
+ * @param {String} header
+ *   First line of log message.
+ */
+function printContext(header) {
+  console.log(header);
+
+  if (context.system) {
+    if (context.system.dialog_stack) {
+      console.log("     dialog_stack: ['" + 
+                  context.system.dialog_stack + "']");
+    }
+    if (context.emotion) {
+      console.log("     emotion: " + context.emotion);
+    }
+    if (context.my_team) {
+      console.log("     my_team: " + context.my_team);
+    }
+    if (context.standings) {
+      console.log("     standings: " + context.standings);
+    }
+    if (context.phoneno) {
+      console.log("     phoneno: " + context.phoneno);
+    }    
+  }
+}
+
+/**
  * Watson conversation with user.
  */
 function mlbConversation() {
@@ -559,14 +593,14 @@ function mlbConversation() {
   textStream.on('data', (user_speech_text) => {
     userSpeechText = user_speech_text.toLowerCase();
     console.log('\n\nWatson hears: ', user_speech_text);
-    console.log('before call - context: ', context);
+    printContext('before call 1:');
     CONVERSATION.message({
       workspace_id: CONFIG.ConWorkspace,
       input: {'text': user_speech_text},
       context: context
     }, (err, response) => {
       context = response.context;
-      console.log('after call - context: ', context);
+      printContext('after call 1:');
 
       watson_response =  response.output.text[0];
       if (watson_response) {
@@ -578,15 +612,15 @@ function mlbConversation() {
         // User has expressed sentiment about team.
         getEmotion(context.emotion).then((detectedEmotion) => {
           context.emotion = detectedEmotion.emotion;
-          console.log('before call - context: ', context);
+          printContext('before call 2:');
           CONVERSATION.message({
             workspace_id: CONFIG.ConWorkspace,
             input: {'text': userSpeechText},
             context: context
           }, (err, response) => {
             context = response.context;
-            console.log('after call - context: ', context);
-            watson_response =  response.output.text[0];
+            printContext('after call 2:');
+            watson_response = response.output.text[0];
             speakResponse(watson_response);
             console.log('Watson says:', watson_response);
           });
@@ -594,14 +628,14 @@ function mlbConversation() {
       } else if (validateTeamStep()) {
         // User has identified which team they want to follow.
         context.standings = getCurrentStandings(context.my_team, mlbStandings);
-        console.log('before call - context: ', context);
+        printContext('before call 3:');
         CONVERSATION.message({
           workspace_id: CONFIG.ConWorkspace,
           input: {'text': userSpeechText},
           context: context
         }, (err, response) => {
           context = response.context;
-          console.log('after call - context: ', context);
+          printContext('after call 3:');
           watson_response =  response.output.text[0];
           speakResponse(watson_response);
           console.log('Watson says:', watson_response);

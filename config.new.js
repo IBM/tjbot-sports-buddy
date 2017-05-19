@@ -34,7 +34,9 @@ exports.DiscoCollectionId = '';
 // Twilio account data
 exports.TwilioAccountSID = ''; 
 exports.TwilioAuthToken = ''; 
+// Include country code with following numbers, e.g. '+12223334444'
 exports.TwilioPhoneNo = '';
+exports.UserPhoneNo = '';
 
 // MLB Fantasy Sports Data
 exports.MLBFantasySubscriptionKey = '';
