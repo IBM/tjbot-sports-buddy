@@ -44,9 +44,13 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create Bluemix services](#2-create-bluemix-services)
 3. [Configure Watson Conversation](#3-configure-watson-conversation)
-4. [Configure Watson Discovery](#4-configure-watson-discovery)
-5. [Configure Slack](#5-configure-slack)
-6. [Run the application](#6-run-the-application)
+4. [Enable Watson Discovery](#4-enable-watson-discovery)
+5. [Enable Watson Speech to Text](#5-enable-watson-speech-to-text)
+6. [Enable Watson Text to Speech](#6-enable-watson-text-to-speech)
+7. [Enable Watson Tone Analyzer](#7-enable-watson-tone-analyzer)
+8. [Register for Twilio Service](#8-register-twilio-service)
+9. [Register for FantasyData Service](#9-register-fantasydata-service)
+10. [Run the application](#10-run-the-application)
 
 ## 1. Clone the repo
 
@@ -71,67 +75,101 @@ Create the following services:
 
 Launch the **Watson Conversation** tool. Use the **import** icon button on the right
 
-<!--
 <p align="center">
   <img width="400" height="55" src="doc/source/images/import_conversation_workspace.png">
 </p>
--->
 
 Find the local version of [`data/workspace.json`](data/workspace.json) and select
 **Import**. Find the **Workspace ID** by clicking on the context menu of the new
 workspace and select **View details**. Save this ID for later.
 
-<!--
 <p align="center">
   <img width="400" height="250" src="doc/source/images/open_conversation_menu.png">
 </p>
--->
 
 *Optionally*, to view the conversation dialog select the workspace and choose the
 **Dialog** tab, here's a snippet of the dialog:
 
-<!--
 ![](doc/source/images/dialog.png)
--->
 
-## 4. Configure Watson Discovery
+## 4. Enable Watson Discovery
 
-Launch the **Watson Discovery** tool. 
+Launch the **Watson Discovery** tool. Select the **Watson Discovery News Collection**.
 
-## 5. Configure Twilio
+<p align="center">
+  <img width="400" height="250" src="doc/source/images/watson_news.png">
+</p>
 
-## 6. Configure MLB Fantasy Data Service
+From the details panel, save the **environment_id** and **collection_id** values.
 
-Use [https://fantasydata.com](https://fantasydata.com)
+<p align="center">
+  <img width="800" height="225" src="doc/source/images/view_discovery_ids.png">
+</p>
 
-## 6. Run the application
+## 5. Enable Watson Speech to Text
 
-### If you used the Deploy to Bluemix button...
+Select the **Watson Speech to Text** service. Select the **Service credentials** menu item.
 
-If you used ``Deploy to Bluemix``, most of the setup is automatic, but not
-quite all of it. We have to update a few environment variables.
+<p align="center">
+  <img width="800" height="250" src="doc/source/images/speech_to_text_ids.png">
+</p>
 
-In the Bluemix dashboard find the App that was created. Click on ``Runtime`` on the menu and navigate to the ``Environment variables`` tab.
+Click **View Credentials** and save the **username** and **password** values.
 
-<!--
-![](doc/source/images/env_vars.png)
--->
+## 6. Enable Watson Text to Speech
 
-Update the following environment variables:
+Select the **Watson Text to Speech** service. Select the **Service credentials** menu item.
 
-  * Twilio
-  * MLB Fantasy Data
+<p align="center">
+  <img width="800" height="250" src="doc/source/images/text_to_speech_ids.png">
+</p>
 
-Save the new values and restart the application, watch the logs for errors.
+Click **View Credentials** and save the **username** and **password** values.
 
-### If you decided to run the app locally...
+## 7. Enable Watson Tone Analyzer
 
-Copy the [`config.new.js`](config.new.js) to `config.js`, edit it with the necessary IDs
-and run the application.
+Select the **Watson Tone Analyzer** service. Select the **Service credentials** menu item.
 
-The `USERNAME`, `PASSWORD`, and `URL` settings for each service can be obtained
-from the `Service Credentials` tab in BlueMix. The other settings were collected
-during the earlier setup steps.
+<p align="center">
+  <img width="800" height="250" src="doc/source/images/tone_analyzer_ids.png">
+</p>
+
+Click **View Credentials** and save the **username** and **password** values.
+
+## 8. Register for Twilio Service
+
+One of the main functions of the tjbot-sports-buddy is to text upcoming games and 
+news headlines about the users favorite baseball teams. To send SMS text messages,
+we use the Twilio service.
+
+Register for a free trial account at [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio).
+
+As part of the service, you will be assigned the following values, which you will need to save:
+- Account SID
+- Authentication Token
+- Twilio supplied phone number (where all texts will originate from)
+
+By default, you will only be able to send SMS text messages to the phone number you
+provided to create your account. To send messages to other numbers, you need to add
+them at [https://www.twilio.com/console/phone_numbers/verified](https://www.twilio.com/console/phone_numbers/verified). 
+For each number you enter, the user of the number will be asked to verify and then be 
+sent a verification code. You will then need to enter this verification code to complete
+the registration process. 
+
+## 9. Register for MLB Fantasy Data Service
+
+A big feature of the tjbot-sports-buddy is being able to provide up to the minute 
+Major League Baseball (MLB) stats. Specifically, schedules and standings. To retrieve
+this data, we use APIs supplied by FantasyData.
+
+Register for a free trial accoount at [https://developer.fantasydata.com](https://developer.fantasydata.com).
+
+Once registered, save the supplied subscription key.
+
+## 10. Run the application
+
+Copy the [`config.new.js`](config.new.js) to `config.js`, edit it with the necessary values
+collected in the previous setup steps, and run the application.
 
 ```
 $ cp config.new.js config.js

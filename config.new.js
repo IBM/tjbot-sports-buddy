@@ -36,6 +36,7 @@ exports.TwilioAccountSID = '';
 exports.TwilioAuthToken = ''; 
 // Include country code with following numbers, e.g. '+12223334444'
 exports.TwilioPhoneNo = '';
+// Only set this if you would like all texts being sent to one number
 exports.UserPhoneNo = '';
 
 // MLB Fantasy Sports Data
