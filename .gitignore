@@ -41,3 +41,6 @@ config.js
 
 # Visual Studio code
 .vscode
+
+# Mac files
+.DS_Store
