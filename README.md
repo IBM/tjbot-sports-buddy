@@ -30,16 +30,15 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 - Bluemix Watson Tone Analyzer
 - Twilio 
 - MLB Fantasy Data service
-- Node.js
+- Node
 
 # Steps
 
-**NOTE:** Perform steps 1-6 **OR** click the ``Deploy to Bluemix`` button and hit ``Create`` and then jump to step 5.
-
-> There is no web UI, so don't use the ``View app`` button to see the app. Use the Bluemix dashboard to find and manage the app. Use your TJBot to chat.
-
-
-[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/5fd641e32af04e4adb16f26c46de3587/button.svg)](https://bluemix.net/deploy?repository=https://github.com/IBM/watson-online-store&cm_mmc=github-code-_-native-_-retailchatbot-_-deploy2bluemix)
+This app is designed to be run on a TJBot, but it can work on any standard workstation
+or laptop that supports audio controls - specifically a microphone input device and an 
+output speaker. It may be simplier to first get this working on your laptop. If you 
+would like to go directly to building this on a TJBot, jump to the section entitled
+[Build a TJBot](#build-a-tjbot) before completing the following steps.
 
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create Bluemix services](#2-create-bluemix-services)
@@ -48,8 +47,8 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 5. [Enable Watson Speech to Text](#5-enable-watson-speech-to-text)
 6. [Enable Watson Text to Speech](#6-enable-watson-text-to-speech)
 7. [Enable Watson Tone Analyzer](#7-enable-watson-tone-analyzer)
-8. [Register for Twilio Service](#8-register-twilio-service)
-9. [Register for FantasyData Service](#9-register-fantasydata-service)
+8. [Register for Twilio Service](#8-register-for-twilio-service)
+9. [Register for MLB Fantasy Data Service](#9-register-for-mlb-fantasy-data-service)
 10. [Run the application](#10-run-the-application)
 
 ## 1. Clone the repo
@@ -179,39 +178,56 @@ $ node run.js
 
 # Sample output
 
-<!--
-Maybe add a transcript here?
--->
+Textual version of a sample conversation with TJBot:
+
+**You:** "Hello Watson" 
+
+**TJBot:** "Hello. I'm Watson and I love baseball. Who's your favorite team?"
+
+**You:** "The Yankees"
+
+**TJBot:** "The New York Yankees are currently in first place. How do you think they will do this year?"
+
+**You:** "Great!"
+
+**TJBot:** "I agree, if they can stay healthy"
+
+**TJBot:** "Would you like me to text you the New York Yankees upcoming schedule and some headling links from Watson News?"
+
+**You:** "Sure"
+
+**TJBot:** "What number should I use?"
+
+**You:** "One two three four five six seven eight nine ten zero"
+
+**TJBot:** "Your text has been sent. Are you interested in any other teams?"
+
+**You:** "No thank you"
+
+**TJBot:** "OK. Have a nice day"
+
+Here is a recap of the services used to perform this conversation:
+- Watson Conversation: The conversation dialog.
+- Watson Speech-To-Text and Text-To-Speech: The audio to support this dialog.
+- Watson Tone Analyzer: Determing an appropriate reply to the users sentiment about his favorite team.
+- Watson Discovery: Generating headline links about the team.
+- Fantasy Data: Retrieving the current standing and upcoming schedule for the team. 
+- Twilio: Texting the team data to the user.
+
+## Build a TJBot
+
+To build your TJBot, follow the tutorial entitled: 
+[Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson-developer-cloud/build-a-chatbot-that-cares-part-2-66367cf26e4b).
+
+It provides a comprehensive guide for:
+
+- Raspberry Pi setup
+- TJBot Carboard assembly
+- Node.js setup
+- Audio support and trouble-shooting
+
+Once your TJBot is running and functional, perform steps 1-10 above to setup and run the **TJBot Sports Buddy** app. 
 
 # License
 
 [Apache 2.0](LICENSE)
-
-# Privacy Notice
-
-If using the Deploy to Bluemix button some metrics are tracked, the following
-information is sent to a [Deployment Tracker](https://github.com/IBM-Bluemix/cf-deployment-tracker-service) service
-on each deployment:
-
-* Python package version
-* Python repository URL
-* Application Name (application_name)
-* Application GUID (application_id)
-* Application instance index number (instance_index)
-* Space ID (space_id)
-* Application Version (application_version)
-* Application URIs (application_uris)
-* Labels of bound services
-* Number of instances for each bound service and associated plan information
-
-This data is collected from the setup.py file in the sample application and the ``VCAP_APPLICATION``
-and ``VCAP_SERVICES`` environment variables in IBM Bluemix and other Cloud Foundry platforms. This
-data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to
-measure the usefulness of our examples, so that we can continuously improve the content we offer
-to you. Only deployments of sample applications that include code to ping the Deployment Tracker
-service will be tracked.
-
-## Disabling Deployment Tracking
-
-To disable tracking, simply remove ``cf_deployment_tracker.track()`` from the
-``run.py`` file in the top level directory.
