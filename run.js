@@ -21,6 +21,8 @@ var mlbScheduleRetrieved = false;
 var textPhoneNo = '';
 var context = {};
 
+var debug = false;
+
 
 /**
  * Create Watson Services.
@@ -561,25 +563,27 @@ function textTeamInfoStep() {
  *   First line of log message.
  */
 function printContext(header) {
-  console.log(header);
+  if (debug) {
+    console.log(header);
 
-  if (context.system) {
-    if (context.system.dialog_stack) {
-      console.log("     dialog_stack: ['" + 
-                  context.system.dialog_stack + "']");
+    if (context.system) {
+      if (context.system.dialog_stack) {
+        console.log("     dialog_stack: ['" + 
+                    context.system.dialog_stack + "']");
+      }
+      if (context.emotion) {
+        console.log("     emotion: " + context.emotion);
+      }
+      if (context.my_team) {
+        console.log("     my_team: " + context.my_team);
+      }
+      if (context.standings) {
+        console.log("     standings: " + context.standings);
+      }
+      if (context.phoneno) {
+        console.log("     phoneno: " + context.phoneno);
+      }    
     }
-    if (context.emotion) {
-      console.log("     emotion: " + context.emotion);
-    }
-    if (context.my_team) {
-      console.log("     my_team: " + context.my_team);
-    }
-    if (context.standings) {
-      console.log("     standings: " + context.standings);
-    }
-    if (context.phoneno) {
-      console.log("     phoneno: " + context.phoneno);
-    }    
   }
 }
 
