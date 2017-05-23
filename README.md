@@ -53,7 +53,7 @@ would like to go directly to building this on a TJBot, jump to the section entit
 
 ## 1. Clone the repo
 
-Clone the `tjbot-sports-buddy' locally. In a terminal, run:
+Clone the `tjbot-sports-buddy` locally. In a terminal, run:
 
   `$ git clone https://github.com/ibm/tjbot-sports-buddy`
 
@@ -109,9 +109,7 @@ From the details panel, save the **environment_id** and **collection_id** values
 
 Select the **Watson Speech to Text** service. Select the **Service credentials** menu item.
 
-<p align="center">
-  <img width="800" height="250" src="doc/source/images/speech_to_text_ids.png">
-</p>
+![](doc/source/images/speech_to_text_ids.png)
 
 Click **View Credentials** and save the **username** and **password** values.
 
@@ -119,9 +117,7 @@ Click **View Credentials** and save the **username** and **password** values.
 
 Select the **Watson Text to Speech** service. Select the **Service credentials** menu item.
 
-<p align="center">
-  <img width="800" height="250" src="doc/source/images/text_to_speech_ids.png">
-</p>
+![](doc/source/images/text_to_speech_ids.png)
 
 Click **View Credentials** and save the **username** and **password** values.
 
@@ -129,9 +125,7 @@ Click **View Credentials** and save the **username** and **password** values.
 
 Select the **Watson Tone Analyzer** service. Select the **Service credentials** menu item.
 
-<p align="center">
-  <img width="800" height="250" src="doc/source/images/tone_analyzer_ids.png">
-</p>
+![](doc/source/images/tone_analyzer_ids.png)
 
 Click **View Credentials** and save the **username** and **password** values.
 
