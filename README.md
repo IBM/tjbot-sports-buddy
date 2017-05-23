@@ -142,7 +142,10 @@ As part of the service, you will be assigned the following values, which you wil
 
 ![](doc/source/images/twilio.png)
 
-Lastly, you will need a Twilio supplied phone number, where all texts will originate from.
+Lastly, you will need a Twilio supplied phone number, where all texts will originate from. To create one, navigate to the *Programmable SMS* option
+in the context menu.
+
+![](doc/source/images/number.png)
 
 - Twilio supplied phone number
 
