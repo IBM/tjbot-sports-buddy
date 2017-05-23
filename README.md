@@ -180,39 +180,41 @@ $ node run.js
 
 Textual version of a sample conversation with TJBot:
 
-**You:** "Hello Watson" 
+>**You:** "Hello Watson" 
 
-**TJBot:** "Hello. I'm Watson and I love baseball. Who's your favorite team?"
+>**TJBot:** "Hello. I'm Watson and I love baseball. Who's your favorite team?"
 
-**You:** "The Yankees"
+>**You:** "The Yankees"
 
-**TJBot:** "The New York Yankees are currently in first place. How do you think they will do this year?"
+>**TJBot:** "The New York Yankees are currently in first place. How do you think they will do this year?"
 
-**You:** "Great!"
+>**You:** "Great!"
 
-**TJBot:** "I agree, if they can stay healthy"
+>**TJBot:** "I agree, if they can stay healthy"
 
-**TJBot:** "Would you like me to text you the New York Yankees upcoming schedule and some headling links from Watson News?"
+>**TJBot:** "Would you like me to text you the New York Yankees upcoming schedule and some headling links from Watson News?"
 
-**You:** "Sure"
+>**You:** "Sure"
 
-**TJBot:** "What number should I use?"
+>**TJBot:** "What number should I use?"
 
-**You:** "One two three four five six seven eight nine ten zero"
+>**You:** "One two three four five six seven eight nine ten zero"
 
-**TJBot:** "Your text has been sent. Are you interested in any other teams?"
+>**TJBot:** "Your text has been sent. Are you interested in any other teams?"
 
-**You:** "No thank you"
+>**You:** "No thank you"
 
-**TJBot:** "OK. Have a nice day"
+>**TJBot:** "OK. Have a nice day"
 
 Here is a recap of the services used to perform this conversation:
-- Watson Conversation: The conversation dialog.
-- Watson Speech-To-Text and Text-To-Speech: The audio to support this dialog.
-- Watson Tone Analyzer: Determing an appropriate reply to the users sentiment about his favorite team.
-- Watson Discovery: Generating headline links about the team.
-- Fantasy Data: Retrieving the current standing and upcoming schedule for the team. 
-- Twilio: Texting the team data to the user.
+
+- *Watson Conversation:* The conversation flow.
+- *Watson Speech-To-Text:* Converts user input to text.
+- *Watson Text-To-Speech:* Converts TJ Bot replies to sound.
+- *Watson Tone Analyzer:* Determes an appropriate reply to the users sentiment about his favorite team.
+- *Watson Discovery:* Generates headline links about the team.
+- *Fantasy Data:* Retrieves the current standing and upcoming schedule for the team. 
+- *Twilio:* Texts team schedule and news to the user.
 
 ## Build a TJBot
 
