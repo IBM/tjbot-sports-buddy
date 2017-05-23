@@ -131,33 +131,40 @@ Click **View Credentials** and save the **username** and **password** values.
 
 ## 8. Register for Twilio Service
 
-One of the main functions of the tjbot-sports-buddy is to text upcoming games and 
-news headlines about the users favorite baseball teams. To send SMS text messages,
-we use the Twilio service.
+One of the main functions of the `tjbot-sports-buddy` is to text upcoming
+games and news headlines about the users favorite baseball teams. To send
+SMS text messages, we use the Twilio service. Register for a free trial account at [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio).
 
-Register for a free trial account at [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio).
+As part of the service, you will be assigned the following values, which you will need to save, they are accessible through your user account settings:
 
-As part of the service, you will be assigned the following values, which you will need to save:
 - Account SID
 - Authentication Token
-- Twilio supplied phone number (where all texts will originate from)
 
-By default, you will only be able to send SMS text messages to the phone number you
-provided to create your account. To send messages to other numbers, you need to add
-them at [https://www.twilio.com/console/phone_numbers/verified](https://www.twilio.com/console/phone_numbers/verified). 
-For each number you enter, the user of the number will be asked to verify and then be 
-sent a verification code. You will then need to enter this verification code to complete
-the registration process. 
+![](doc/source/images/twilio.png)
+
+Lastly, you will need a Twilio supplied phone number, where all texts will originate from.
+
+- Twilio supplied phone number
+
+By default, you will only be able to send SMS text messages to the phone
+number you provided to create your account. To send messages to other
+numbers, you need to add them at [https://www.twilio.com/console](https://www.twilio.com/).
+For each number you enter, the user of the number will be asked to verify
+and then be sent a verification code. You will then need to enter this
+verification code to complete the registration process.
 
 ## 9. Register for MLB Fantasy Data Service
 
-A big feature of the tjbot-sports-buddy is being able to provide up to the minute 
-Major League Baseball (MLB) stats. Specifically, schedules and standings. To retrieve
-this data, we use APIs supplied by FantasyData.
+Another feature of the `tjbot-sports-buddy` is being able to provide up to
+the minute Major League Baseball (MLB) stats. Specifically, schedules and
+standings. To retrieve this data, we use APIs supplied by FantasyData.
 
 Register for a free trial accoount at [https://developer.fantasydata.com](https://developer.fantasydata.com).
 
-Once registered, save the supplied subscription key.
+Once registered, save the supplied subscription key, available through your
+profile.
+
+![](doc/source/images/mlb.png)
 
 ## 10. Run the application
 
