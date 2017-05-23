@@ -177,6 +177,15 @@ $ cp config.new.js config.js
 $ node run.js
 ```
 
+### Troubleshooting
+
+You may need to install dependencies before running the application, to do
+so, run the following from the cloned repo location:
+
+```
+$ npm install --save
+```
+
 # Sample output
 
 Textual version of a sample conversation with TJBot:
