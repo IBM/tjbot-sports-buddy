@@ -171,22 +171,23 @@ profile.
 
 ## 10. Run the application
 
-Copy the [`config.new.js`](config.new.js) to `config.js`, edit it with the necessary values
-collected in the previous setup steps, and run the application.
+First, update the values in [`config.new.js`](config.new.js) and rename it to `config.js`:
 
 ```
 $ cp config.new.js config.js
 ### edit config.js
-$ node run.js
 ```
 
-### Troubleshooting
-
-You may need to install dependencies before running the application, to do
-so, run the following from the cloned repo location:
+Second, install dependencies, run the following from the cloned repo location:
 
 ```
 $ npm install --save
+```
+
+Lastly, run the application:
+
+```
+$ node run.js
 ```
 
 # Sample output
