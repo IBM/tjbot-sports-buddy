@@ -109,7 +109,7 @@ From the details panel, save the **environment_id** and **collection_id** values
 
 Select the **Watson Speech to Text** service. Select the **Service credentials** menu item.
 
-![]("doc/source/images/speech_to_text_ids.png")
+![](doc/source/images/speech_to_text_ids.png)
 
 Click **View Credentials** and save the **username** and **password** values.
 
@@ -117,7 +117,7 @@ Click **View Credentials** and save the **username** and **password** values.
 
 Select the **Watson Text to Speech** service. Select the **Service credentials** menu item.
 
-![]("doc/source/images/text_to_speech_ids.png")
+![](doc/source/images/text_to_speech_ids.png)
 
 Click **View Credentials** and save the **username** and **password** values.
 
@@ -125,7 +125,7 @@ Click **View Credentials** and save the **username** and **password** values.
 
 Select the **Watson Tone Analyzer** service. Select the **Service credentials** menu item.
 
-![]("doc/source/images/tone_analyzer_ids.png")
+![](doc/source/images/tone_analyzer_ids.png)
 
 Click **View Credentials** and save the **username** and **password** values.
 
