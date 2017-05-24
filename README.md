@@ -184,6 +184,8 @@ Second, install dependencies, run the following from the cloned repo location:
 $ npm install --save
 ```
 
+> **NOTE:** you may need to install other dependencies, refer to the [Troubleshooting](troubleshooting) section below.
+
 Lastly, run the application:
 
 ```
@@ -243,6 +245,55 @@ It provides a comprehensive guide for:
 - Audio support and trouble-shooting
 
 Once your TJBot is running and functional, perform steps 1-10 above to setup and run the **TJBot Sports Buddy** app. 
+
+# Troubleshooting
+
+### Help! My app is crashing
+
+You may need to install a few audio related dependencies if you're seeing the following error:
+
+```
+events.js:163
+  throw er; // Unhandled 'error' event
+```
+
+#### On OSX
+
+Use `brew` to install:
+
+* mplayer
+* sox
+* ffmpeg
+
+```
+$ brew install sox mplayer ffmpeg
+```
+
+And use NPM to install:
+
+* node-ffprobe
+
+```
+$ npm install node-ffprobe
+```
+
+#### On Ubuntu
+
+Use `apt-get` to install:
+
+* ffmpeg
+
+```
+$ sudo apt-get install ffmpeg
+```
+
+And use NPM to install:
+
+* node-ffprobe
+
+```
+$ npm install node-ffprobe
+```
 
 # License
 
