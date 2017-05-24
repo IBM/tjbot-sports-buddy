@@ -14,19 +14,25 @@
   "author": "Rich Hagarty",
   "dependencies": {
     "mic": "^2.1.1",
-    "mocha": "^3.4.1",
     "node-ffprobe": "^1.2.2",
     "play-sound": "^1.1.1",
-    "prompt": "^1.0.0",
-    "request-promise": "^4.2.1",
     "promise": "^7.1.1",
-    "twilio": "^3.0.0",
+    "prompt": "^1.0.0",
     "raspicam": "git+https://github.com/troyth/node-raspicam.git",
-    "watson-developer-cloud": "^2.2.0"
+    "request-promise": "^4.2.1",
+    "twilio": "^3.0.0",
+    "watson-developer-cloud": "^2.32.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "jshint": "^2.9.4",
-    "mocha": "*"
-  }
+    "mocha": "^3.4.1"
+  },
+  "license": "Apache-2.0",
+    "licenses": [
+      {
+        "type": "Apache-2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0"
+      }
+    ]
 }
