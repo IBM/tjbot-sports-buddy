@@ -22,15 +22,19 @@ When the reader has completed this journey, they will understand how to:
 
 Want to take your Watson app to the next level? Looking to leverage Watson Brand assets? Join the [With Watson](https://www.ibm.com/watson/with-watson) program which provides exclusive brand, marketing, and tech resources to amplify and accelerate your Watson embedded commercial solution.
 
-## Included Components
-- Bluemix Watson Conversation
-- Bluemix Watson Discovery
-- Bluemix Watson Text to Speech
-- Bluemix Watson Speech to Text
-- Bluemix Watson Tone Analyzer
-- Twilio 
-- MLB Fantasy Data service
-- Node
+## Included components
+
+* [Watson Conversation](https://www.ibm.com/watson/developercloud/conversation.html): Build, test and deploy a bot or virtual agent across mobile devices, messaging platforms, or even on a physical robot.
+* [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): A cognitive search and content analytics engine for applications to identify patterns, trends, and actionable insights.
+* [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): Converts written text into natural sounding audio in a variety of languages and voices.
+* [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): A service that converts human voice into written text.
+* [Watson Tone Analyzer](https://www.ibm.com/watson/developercloud/tone-analyzer.html): Uses linguistic analysis to detect communication tones in written text.
+
+## Featured technologies
+
+* [Twilio](https://www.twilio.com/): Integrate voice, messaging, and VoIP into your web and mobile apps. 
+* [MLB Fantasy Data](https://fantasydata.com/): A leading provider of real time sports data and content across multiple sports, serving fantasy, media and mobile clients worldwide.
+* [Node.js](https://nodejs.org/en/): An asynchronous event driven JavaScript runtime, designed to build scalable applications.
 
 # Steps
 
