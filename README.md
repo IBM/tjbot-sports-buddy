@@ -36,6 +36,10 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 * [MLB Fantasy Data](https://fantasydata.com/): A leading provider of real time sports data and content across multiple sports, serving fantasy, media and mobile clients worldwide.
 * [Node.js](https://nodejs.org/en/): An asynchronous event driven JavaScript runtime, designed to build scalable applications.
 
+# Watch the Video
+
+[![](http://img.youtube.com/vi/NJ87_rYfH0c/0.jpg)](https://www.youtube.com/watch?v=NJ87_rYfH0c)
+
 # Steps
 
 This app is designed to be run on a TJBot, but it can work on any standard workstation
