@@ -1,6 +1,9 @@
 // The attention word to wake up the robot.
 exports.attentionWord = 'watson';
 
+// MLB Season
+exports.MLBSeason = '2017';
+
 // You can change the voice of the robot to your favorite voice.
 exports.voice = 'en-US_MichaelVoice';
 // Some of the available options are:
