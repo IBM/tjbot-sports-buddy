@@ -10,6 +10,7 @@ const REQUEST = require('request-promise');
 const PROMISE = require('promise');
 
 const ATTENTION_WORD = CONFIG.attentionWord;
+const MLB_SEASON = CONFIG.MLBSeason;
 var mlbTeams;
 var mlbTeamsRetrieved = false;
 var mlbStandings;
@@ -138,7 +139,7 @@ function getMlbTeams() {
 function getMlbStandings() {
   const options = {
     method: 'GET',
-    uri: 'https://api.fantasydata.net/mlb/v2/JSON/Standings/2017',
+    uri: 'https://api.fantasydata.net/mlb/v2/JSON/Standings/' + MLB_SEASON,
     headers: {
       'Host': 'api.fantasydata.net',
       'Ocp-Apim-Subscription-Key': MLB_DATA_KEY
@@ -179,7 +180,7 @@ function getMlbSchedules() {
       day = ("0" + date.getDate()).slice(-2);
       const options = {
         method: 'GET',
-        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/2017-' + 
+        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/' + MLB_SEASON + '-' + 
               monthNames[month] + '-' + day,
         headers: {
           'Host': 'api.fantasydata.net',
@@ -190,10 +191,14 @@ function getMlbSchedules() {
       REQUEST(options)
         .then(function (response) {
           daySchedule = JSON.parse(response);
-          console.log('Retrieved schedule for date: ' + daySchedule[0].Day);
-          // Save each date in array so that they can be sorted 
-          // after all dates are retrieved.
-          mlbScheduleDates[mlbScheduleDates.length] = daySchedule;
+          if (daySchedule.length > 0) {
+            console.log('Retrieved schedule for date: ' + daySchedule[0].Day);
+            // Save each date in array so that they can be sorted 
+            // after all dates are retrieved.
+            mlbScheduleDates[mlbScheduleDates.length] = daySchedule;
+          } else {
+            console.log('Retrieved schedule for date: NO GAMES FOUND');
+          }
           scheduleDaysCollected += 1;
           if (scheduleDaysCollected === 7) {
             return resolve();
