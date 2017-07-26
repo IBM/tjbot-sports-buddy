@@ -45,7 +45,7 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 1. [저장소 복제](#1-저장소-복제)
 2. [Bluemix 서비스 생성](#2-bluemix-서비스-생성)
 3. [Watson Conversation 구성](#3-watson-conversation-구성)
-4. [Watson Discovery 사용](#4-watson-discovry-사용)
+4. [Watson Discovery 사용](#4-watson-discovery-사용)
 5. [Watson Speech to Text 사용](#5-watson-speech-to-text-사용)
 6. [Watson Text to Speech 사용](#6-watson-text-to-speech-사용)
 7. [Watson Tone Analyzer 사용](#7-watson-tone-analyzer-사용)
