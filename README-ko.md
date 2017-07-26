@@ -49,8 +49,8 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 5. [Watson Speech to Text 사용](#5-watson-speech-to-text-사용)
 6. [Watson Text to Speech 사용](#6-watson-text-to-speech-사용)
 7. [Watson Tone Analyzer 사용](#7-watson-tone-analyzer-사용)
-8. [Twilio 서비스 등록](#8-Twilio-서비스-등록)
-9. [MLB 판타지 데이터 서비스 등록](#9-MLB-판타지-데이터-서비스-등록)
+8. [Twilio 서비스 등록](#8-twilio-서비스-등록)
+9. [MLB 판타지 데이터 서비스 등록](#9-mlb-판타지-데이터-서비스-등록)
 10. [애플리케이션 실행](#10-애플리케이션-실행)
 
 ## 1. 저장소 복제
