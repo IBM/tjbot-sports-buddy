@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/IBM/tjbot-sports-buddy.svg?branch=master)](https://travis-ci.org/IBM/tjbot-sports-buddy)
 
-# 스포츠에 대해 이야기하는 Watson Services를 활용한 TJBot 구축하기
+# 스포츠에 대해 이야기하는 Watson 서비스를 활용한 TJBot 구축하기
 
 이 개발자 여정에서는 야구를 아는 TJBot을 제작할 것입니다. Watson Discovery를 사용하여 TJBot은 좋아하는 팀의 현재 리그 순위, 예정된 일정 및 관련 기사 링크등의 정보를 Watson News로 부터 제공합니다. Twilio를 통해 사용자에게 SMS 문자 메시지를 보내는 방법도 추가로 보여줍니다.
 
@@ -24,15 +24,15 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 
 * [Watson Conversation](https://www.ibm.com/watson/developercloud/conversation.html): 모바일 디바이스와 메신저 플랫폼, 심지어 물리적 로봇 상에서의 대화 봇 또는 가상 에이전트를 빌드, 테스트하고 디플로이합니다.
 * [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): 특정 패턴, 트렌드, 실행 가능한 인사이트를 도출하는 애플리케이션 개발을 위한 인공지능 기반 검색, 콘텐츠 분석 엔진.
-* [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): Converts written text into natural sounding audio in a variety of languages and voices.
-* [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): A service that converts human voice into written text.
-* [Watson Tone Analyzer](https://www.ibm.com/watson/developercloud/tone-analyzer.html): Uses linguistic analysis to detect communication tones in written text.
+* [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): 텍스트를 다양한 언어와 음성으로 변환합니다.
+* [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): 음성을 텍스트로 변환합니다.(음성인식)
+* [Watson Tone Analyzer](https://www.ibm.com/watson/developercloud/tone-analyzer.html): 언어 분석을 통해 주어진 텍스트 내포된 대화의 톤을 찾아냅니다.
 
 ## 주요 기술
 
 * [Twilio](https://www.twilio.com/): 음성, 메시징 및 VoIP를 웹 및 모바일 앱에 통합시킵니다. 
-* [MLB Fantasy Data](https://fantasydata.com/): A leading provider of real time sports data and content across multiple sports, serving fantasy, media and mobile clients worldwide.
-* [Node.js](https://nodejs.org/en/): An asynchronous event driven JavaScript runtime, designed to build scalable applications.
+* [MLB Fantasy Data](https://fantasydata.com/): 전 세계 스포츠 판타지,미디어 및 모바일 고객에게 다양한 스포츠와 관련된 실시간 데이터 및 컨텐츠를 제공하는 선도 업체입니다.
+* [Node.js](https://nodejs.org/en/): 확장 가능한 응용 프로그램을 구동을 위한 비동기식 이벤트 방식의 JavaScript 런타임.
 
 # 비디오 보기
 
