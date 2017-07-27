@@ -2,7 +2,9 @@
 
 # Build a TJBot using Watson Services to talk about sports
 
-In this developer journey we will build a TJBot that knows baseball. Using 
+*Read this in other languages: [한국어](README-ko.md).*
+
+In this developer journey we will build a TJBot that knows baseball. Using
 Watson Discovery, TJBot will give you insight about your favorite teams, such as
 their current league standing, their upcoming shedule, and links to a few
 relevant articles from Watson News.
@@ -12,7 +14,7 @@ When the reader has completed this journey, they will understand how to:
 * Build a TJBot that converses using Watson Conversation
 * Use Watson Text to Speech and Speech to Text services to converse with TJBot
 * Use Watson Tone Analyzer to determine your sentiment about your favorite teams
-* Use Watson Discovery News to find news articles about your favorite teams 
+* Use Watson Discovery News to find news articles about your favorite teams
 * Query 3rd party data sources to get the latest Major League Baseball (MLB) data
 * Use Twilio to send SMS text messages with team schedules and news article links
 
@@ -32,7 +34,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 
 ## Featured technologies
 
-* [Twilio](https://www.twilio.com/): Integrate voice, messaging, and VoIP into your web and mobile apps. 
+* [Twilio](https://www.twilio.com/): Integrate voice, messaging, and VoIP into your web and mobile apps.
 * [MLB Fantasy Data](https://fantasydata.com/): A leading provider of real time sports data and content across multiple sports, serving fantasy, media and mobile clients worldwide.
 * [Node.js](https://nodejs.org/en/): An asynchronous event driven JavaScript runtime, designed to build scalable applications.
 
@@ -43,8 +45,8 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 # Steps
 
 This app is designed to be run on a TJBot, but it can work on any standard workstation
-or laptop that supports audio controls - specifically a microphone input device and an 
-output speaker. It may be simplier to first get this working on your laptop. If you 
+or laptop that supports audio controls - specifically a microphone input device and an
+output speaker. It may be simplier to first get this working on your laptop. If you
 would like to go directly to building this on a TJBot, jump to the section entitled
 [Build a TJBot](#build-a-tjbot) before completing the following steps.
 
@@ -204,7 +206,7 @@ $ node run.js
 
 Textual version of a sample conversation with TJBot:
 
->**You:** "Hello Watson" 
+>**You:** "Hello Watson"
 
 >**TJBot:** "Hello. I'm Watson and I love baseball. Who's your favorite team?"
 
@@ -237,12 +239,12 @@ Here is a recap of the services used to perform this conversation:
 - *Watson Text-To-Speech:* Converts TJ Bot replies to sound.
 - *Watson Tone Analyzer:* Determes an appropriate reply to the users sentiment about his favorite team.
 - *Watson Discovery:* Generates headline links about the team.
-- *Fantasy Data:* Retrieves the current standing and upcoming schedule for the team. 
+- *Fantasy Data:* Retrieves the current standing and upcoming schedule for the team.
 - *Twilio:* Texts team schedule and news to the user.
 
 ## Build a TJBot
 
-To build your TJBot, follow the tutorial entitled: 
+To build your TJBot, follow the tutorial entitled:
 [Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson-developer-cloud/build-a-chatbot-that-cares-part-2-66367cf26e4b).
 
 It provides a comprehensive guide for:
@@ -252,7 +254,7 @@ It provides a comprehensive guide for:
 - Node.js setup
 - Audio support and trouble-shooting
 
-Once your TJBot is running and functional, perform steps 1-10 above to setup and run the **TJBot Sports Buddy** app. 
+Once your TJBot is running and functional, perform steps 1-10 above to setup and run the **TJBot Sports Buddy** app.
 
 # Troubleshooting
 
