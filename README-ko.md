@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/IBM/tjbot-sports-buddy.svg?branch=master)](https://travis-ci.org/IBM/tjbot-sports-buddy)
 
-# 스포츠에 대해 이야기하는 Watson Services를 활용한 TJBot 만들기
+
+# 스포츠에 대해 이야기하는 Watson 서비스를 활용한 TJBot 만들기
+
 
 이 개발 과정에서는 야구를 아는 TJBot을 제작할 것입니다. Watson Discovery를 사용하여 TJBot은 좋아하는 팀의 현재 리그 순위, 예정된 일정 및 관련 기사 링크등의 정보를 Watson News를 통해 제공합니다. Twilio를 통해 사용자에게 SMS 문자 메시지를 보내는 방법도 추가로 안내합니다.
 
@@ -22,11 +24,13 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 
 ## 포함된 구성요소
 
+
 * [Watson Conversation](https://www.ibm.com/watson/developercloud/conversation.html): 모바일 디바이스와 메신저 플랫폼 상에서, 심지어 물리적 로봇에서도 챗봇 또는 가상 에이전트를 빌드, 테스트하고 배포합니다.
 * [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): 특정 패턴, 트렌드, 실행 가능한 인사이트를 도출하는 애플리케이션 개발을 위한 인공지능 기반 검색, 콘텐츠 분석 엔진입니다.
-* [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): 문자 텍스트를 다양한 언어와 목소리를 통해 자연스럽게 들리는 음성 언어로 변환합니다.
-* [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): 사람의 목소리를 문자 텍스트로 변환하는 서비스입니다.
-* [Watson Tone Analyzer](https://www.ibm.com/watson/developercloud/tone-analyzer.html): 문자 텍스트의 대화 톤을 감지하기 위해 언어학적 분석을 활용합니다.
+* [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): 텍스트를 다양한 언어와 목소리를 통해 자연스럽게 들리는 음성 언어로 변환합니다.
+* [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): 음성을 텍스트로 변환합니다.(음성인식)
+* [Watson Tone Analyzer](https://www.ibm.com/watson/developercloud/tone-analyzer.html): 텍스트의 대화 톤을 감지하기 위해 언어학적 분석을 활용합니다.
+
 
 ## 주요 기술
 
@@ -34,13 +38,14 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 * [MLB Fantasy Data](https://fantasydata.com/): 실시간 스포츠 데이터와 컨텐트를 전셰계의 자사 고객, 미디어, 모바일 고객에게 제공하는 스포츠 정보 전문 제공업체입니다.
 * [Node.js](https://nodejs.org/en/): 확장 가능한 애플리케이션을 빌드하도록 설계된 비동기 이벤트 반응형(event-driven) JavaScript 런타임입니다.
 
+
 # 비디오 보기
 
 [![](http://img.youtube.com/vi/NJ87_rYfH0c/0.jpg)](https://www.youtube.com/watch?v=NJ87_rYfH0c)
 
 # 단계
 
-이 앱은 TJBot에서 실행되도록 설계되었지만 오디오 컨트롤(특히 마이크 입력 장치 및 출력 스피커)을 지원하는 모든 표준 워크 스테이션 또는 랩탑에서 실행할 수 있습니다. 먼저 노트북에서 이 작업을 진행하는 것이 더 간단할 수 있습니다. TJBot에서 직접 빌드하려면 다음 단계를 완료하기 전에 [TJBot 빌드하기](#tjbot-빌드하기) 섹션으로 이동하십시오.
+이 앱은 TJBot에서 실행되도록 설계되었지만 오디오 컨트롤(특히 마이크 입력 장치 및 출력 스피커)을 지원하는 모든 표준 워크 스테이션 또는 랩탑에서 실행할 수 있습니다. 먼저 노트북에서 이 작업을 진행하는 것이 더 간단할 수 있습니다. TJBot에서 직접 빌드하려면 다음 단계를 완료하기 전에 [TJBot 만들기](#tjbot-만들기) 섹션으로 이동하십시오.
 
 1. [저장소 복제](#1-저장소-복제)
 2. [Bluemix 서비스 생성](#2-bluemix-서비스-생성)
@@ -49,8 +54,8 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 5. [Watson Speech to Text 사용](#5-watson-speech-to-text-사용)
 6. [Watson Text to Speech 사용](#6-watson-text-to-speech-사용)
 7. [Watson Tone Analyzer 사용](#7-watson-tone-analyzer-사용)
-8. [Twilio 서비스 등록](#8-Twilio-서비스-등록)
-9. [MLB 판타지 데이터 서비스 등록](#9-MLB-판타지-데이터-서비스-등록)
+8. [Twilio 서비스 등록](#8-twilio-서비스-등록)
+9. [MLB 판타지 데이터 서비스 등록](#9-mlb-판타지-데이터-서비스-등록)
 10. [애플리케이션 실행](#10-애플리케이션-실행)
 
 ## 1. 저장소 복제
@@ -222,9 +227,10 @@ TJBot을 사용한 샘플 대화의 텍스트 버전 :
 - *Fantasy Data:* 팀의 예정된 경기 일정을 가져옵니다. 
 - *Twilio:* 사용자에게 팀 일정과 관련 뉴스를 SMS로 보냅니다.
 
-## TJBot 빌드하기
+## TJBot 만들기
 
-여러분만의 TJBot를 작성하려면 아래의 튜토리얼을 참고하십시오.
+여러분만의 TJBot를 만드시려면 아래의 튜토리얼을 참고하십시오.
+
 [Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson-developer-cloud/build-a-chatbot-that-cares-part-2-66367cf26e4b).
 
 다음을 위한 전반적인 가이드를 제공합니다:
