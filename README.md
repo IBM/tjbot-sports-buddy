@@ -305,6 +305,62 @@ And use NPM to install:
 $ npm install node-ffprobe
 ```
 
+### TJBot says "Hi there, I am awake" and then exits.
+
+We have seen this error on Ubuntu, and it is due to microphone issues.
+
+The first step is to diagnose the problem. In [run.js](run.js), go to the following object and modify `debug` to true:
+
+```
+const MIC_PARAMS = { 
+  rate: 44100, 
+  channels: 2, 
+  debug: true, 
+  exitOnSilence: 6
+};
+```
+If you get the error:
+```
+Received Info: arecord: main:722: audio open error: No such file or directory
+```
+Try this:
+```
+$ arecord -l  // locate your micophone card and device number
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 2: ALC262 Alt Analog [ALC262 Alt Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+card 2: C320M [Plantronics C320-M], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+```
+Then add the card and device (`hw:card,device`) number to your microphone params. For example to use the `Plantronics` card above:
+```
+const MIC_PARAMS = { 
+  rate: 44100, 
+  channels: 2, 
+  device: 'hw:2,0',
+  debug: true, 
+  exitOnSilence: 6
+};
+```
+If you get the error:
+```
+Received Info: arecord: main:722: audio open error: Device or resource busy
+```
+It means your device is being used by another process. Try the following:
+1. Exit any volume control applications that may be running, such as `PulseAudio`.
+2. Exit any open browsers.
+
+If you still get the error, reboot.
+
+> **NOTE:** make sure you set `debug:false` after everything is working, otherwise too many log messages will be output to the console. 
+
+
 # License
 
 [Apache 2.0](LICENSE)
