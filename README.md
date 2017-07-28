@@ -325,7 +325,7 @@ Received Info: arecord: main:722: audio open error: No such file or directory
 ```
 Try this:
 ```
-$ arecord -l  // locate your micophone card and device number
+$ arecord -l  // locate your microphone card and device number
 **** List of CAPTURE Hardware Devices ****
 card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
   Subdevices: 1/1
