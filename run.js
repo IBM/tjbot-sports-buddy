@@ -58,7 +58,7 @@ const DISCOVERY = WATSON.discovery({
   username: CONFIG.DiscoUsername,
   password: CONFIG.DiscoPassword,
   version: 'v1',
-  version_date: '2016-11-07'
+  version_date: '2017-08-01'
 });
 
 

@@ -31,8 +31,10 @@ exports.TTSPassword = '';
 // Credentials for Watson Discovery service
 exports.DiscoUsername = '';
 exports.DiscoPassword = '';
-exports.DiscoEnvironmentId = '';
-exports.DiscoCollectionId = '';
+// NOTE: starting with v2017-08-01, the Watson News collection
+// always uses the following IDs
+exports.DiscoEnvironmentId = 'system';
+exports.DiscoCollectionId = 'news';
 
 // Twilio account data
 exports.TwilioAccountSID = ''; 
