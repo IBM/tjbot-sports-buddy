@@ -144,7 +144,7 @@ function getMlbTeams() {
           var file = 'data/mlb-teams.json';
           jsonfile.writeFile(file, mlbTeams, {spaces: 2}, function (err) {
             console.error(err);
-          })
+          });
         }
   
         return resolve();
@@ -180,7 +180,7 @@ function getMlbStandings() {
           var file = 'data/mlb-standings.json';
           jsonfile.writeFile(file, mlbStandings, {spaces: 2}, function (err) {
             console.error(err);
-          })
+          });
         }
 
         return resolve();
@@ -240,7 +240,7 @@ function getMlbSchedules() {
               var file = 'data/mlb-schedule.json';
               jsonfile.writeFile(file, mlbScheduleDates, {spaces: 2}, function (err) {
                 console.error(err);
-              })
+              });
             }
       
             return resolve();
