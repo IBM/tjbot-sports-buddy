@@ -3,6 +3,7 @@ exports.attentionWord = 'watson';
 
 // MLB Season
 exports.MLBSeason = '2017';
+exports.offSeason = false;
 
 // You can change the voice of the robot to your favorite voice.
 exports.voice = 'en-US_MichaelVoice';

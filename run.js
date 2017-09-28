@@ -11,6 +11,7 @@ const PROMISE = require('promise');
 
 const ATTENTION_WORD = CONFIG.attentionWord;
 const MLB_SEASON = CONFIG.MLBSeason;
+const OFF_SEASON = CONFIG.offSeason;
 var mlbTeams;
 var mlbTeamsRetrieved = false;
 var mlbStandings;
@@ -23,6 +24,7 @@ var textPhoneNo = '';
 var context = {};
 
 var debug = false;
+var saveData = false;
 
 
 /**
@@ -105,6 +107,19 @@ MIC_INPUT_STREAM.on('pauseComplete', ()=> {
   }, Math.round(pauseDuration * 1000));
 });
 
+/**
+ * Get current date
+ */
+function getCurrentDate() {
+  var date;
+  if (OFF_SEASON) {
+    // all saved data is from Sept 28, 2017
+    date = new Date(2017, 8, 28);        
+  } else {
+    date = new Date();    
+  }
+  return date;
+}
 
 /**
  * Get current MLB team info from MLB Fantasy Data.
@@ -123,6 +138,15 @@ function getMlbTeams() {
     REQUEST(options)
       .then(function (response) {
         mlbTeams = JSON.parse(response);
+
+        if (saveData) {
+          var jsonfile = require('jsonfile');
+          var file = 'data/mlb-teams.json';
+          jsonfile.writeFile(file, mlbTeams, {spaces: 2}, function (err) {
+            console.error(err);
+          })
+        }
+  
         return resolve();
       })
       .catch(function (err) {
@@ -150,6 +174,15 @@ function getMlbStandings() {
     REQUEST(options)
       .then(function (response) {
         mlbStandings = JSON.parse(response);
+
+        if (saveData) {
+          var jsonfile = require('jsonfile');
+          var file = 'data/mlb-standings.json';
+          jsonfile.writeFile(file, mlbStandings, {spaces: 2}, function (err) {
+            console.error(err);
+          })
+        }
+
         return resolve();
       })
       .catch(function (err) {
@@ -170,7 +203,7 @@ function getMlbSchedules() {
     'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
   ];
 
-  var date = new Date();
+  var date = getCurrentDate();
 
   return new PROMISE((resolve, reject) => {
     for (let i = 0; i < 7; i++) {
@@ -201,6 +234,15 @@ function getMlbSchedules() {
           }
           scheduleDaysCollected += 1;
           if (scheduleDaysCollected === 7) {
+
+            if (saveData) {
+              var jsonfile = require('jsonfile');
+              var file = 'data/mlb-schedule.json';
+              jsonfile.writeFile(file, mlbScheduleDates, {spaces: 2}, function (err) {
+                console.error(err);
+              })
+            }
+      
             return resolve();
           }
         })
@@ -218,7 +260,7 @@ function getMlbSchedules() {
  * requested separately, and are returned in random order.
  */
 function sortSchedule() {
-  var date = new Date();
+  var date = getCurrentDate();
   var daysProcessed = 0;
   
   while (daysProcessed < 7) {
@@ -290,18 +332,18 @@ function getUpcomingSchedule(team) {
 
   var schedString = 'No schedule data found for ' + team;
   if (teamKey && mlbSchedule) {
-    var gameCount = 0;
-    var date = new Date();
     schedString = 'Upcoming schedule for the ' + team + ':\n';
-    while (gameCount < 5) {
+    var gameCount = 0;
+    var date = getCurrentDate();
+    var dayCtr = 0;
+    var done = false;
+    while (! done) {
       date.setDate(date.getDate() + 1);
-      var foundDate = false;
+      dayCtr++;
       for (let i = 0; i < mlbSchedule.length; i++) {
         // Limit schedule to just next 5 games.
-        if ((foundDate) || 
-            (mlbSchedule[i].Day.substring(5,10) === 
-            date.toJSON().substring(5,10))) {
-          foundDate = true;
+        if (mlbSchedule[i].Day.substring(5,10) === 
+            date.toJSON().substring(5,10)) {
           var game = '';
           if (mlbSchedule[i].AwayTeam === teamKey) {
             game = mlbSchedule[i].DateTime.substring(5,10) +
@@ -315,9 +357,17 @@ function getUpcomingSchedule(team) {
           if (game) {
             schedString = schedString.concat(game);
             gameCount += 1;
+            if (gameCount === 5) {
+              done = true;
+            }
             break;
           }
         }
+      }
+      if (dayCtr === 7) {
+        // don't look more than a week out to find 5 games
+        // this is needed for end of season
+        done = true;
       }
     }
 
@@ -662,6 +712,20 @@ function mlbConversation() {
  * Load all MLB data and start conversation when completed.
  */
 function init() {
+  if (OFF_SEASON) {
+    var fs = require('fs');
+    mlbTeams = JSON.parse(fs.readFileSync('data/mlb-teams.json', 'utf8'));
+    mlbStandings = JSON.parse(fs.readFileSync('data/mlb-standings.json', 'utf8'));
+    mlbScheduleDates = JSON.parse(fs.readFileSync('data/mlb-schedule.json', 'utf8'));
+    
+    sortSchedule();
+
+    mlbTeamsRetrieved = true;
+    mlbStandingsRetrieved = true;
+    mlbScheduleRetrieved = true;
+    startConversationIfReady();
+    
+  } else {
     // Generate data to be used during the conversation.
     getMlbTeams()
       .then(function() {
@@ -691,6 +755,7 @@ function init() {
       .catch(err => {
         throw new Error('Error loading MLB schedules');
       });
+    }
 }
 
 

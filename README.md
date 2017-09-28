@@ -360,6 +360,20 @@ If you still get the error, reboot.
 
 > **NOTE:** make sure you set `debug:false` after everything is working, otherwise too many log messages will be output to the console. 
 
+### TJBot never speaks and you ONLY see "Retrieved schedule for date: NO GAMES FOUND" messages.
+
+This is most likely due to the baseball season being over, or your config file specifies the wrong baseball season.
+
+If the baseball season is over (runs from early April to late September), set the following flag in config.js:
+```
+exports.offSeason = true;
+```
+> **NOTE:** the data returned by TJBot will come from an archived version of previous season data and and will not be accurate, but at least you will be able to interact with it.
+
+If the baseball season isn't over, make sure the following variable is set correctly in config.js:
+```
+exports.MLBSeason = '2017';
+```
 
 # License
 
