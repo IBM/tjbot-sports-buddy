@@ -24,6 +24,22 @@ var textPhoneNo = '';
 var context = {};
 
 var debug = false;
+
+/**
+ * Only set 'saveData' to true if you wish to preserve the current MLB 
+ * data during the actual season. This will write out data to the following 
+ * files:
+ * 
+ * data/mlb-teams.json
+ * data/mlb-standings.json
+ * data/mlb-schedule.json
+ * 
+ * The master version of these files was a snapshot of the MLB season on 
+ * 9/28/17. This data will allow users to run this app during the MLB 
+ * off season (set 'config.offSeason' to true). Setting 'saveData' to true 
+ * will overwrite these files and require that function getCurrentData()
+ * be set appropriately.
+ */
 var saveData = false;
 
 
