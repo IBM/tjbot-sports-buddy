@@ -16,6 +16,7 @@
 
  /* jshint esversion: 6 */
 
+var TJBot = require('tjbot');
 const WATSON = require('watson-developer-cloud');
 const CONFIG = require('./config.js');
 const FS = require('fs');
@@ -41,42 +42,68 @@ var context = {};
 
 var debug = false;
 
+// obtain our credentials from config.js
+var credentials = CONFIG.credentials;
+
 
 /**
  * Create Watson Services.
  */
 const SPEECH_TO_TEXT = WATSON.speech_to_text({
-  username: CONFIG.STTUsername,
-  password: CONFIG.STTPassword,
+  username: credentials.speech_to_text.username,
+  password: credentials.speech_to_text.password,
   version: 'v1'
 });
 
 const TONE_ANALYZER = WATSON.tone_analyzer({
-  username: CONFIG.ToneUsername,
-  password: CONFIG.TonePassword,
+  username: credentials.tone_analyzer.username,
+  password: credentials.tone_analyzer.password,
   version: 'v3',
   version_date: '2016-05-19'
 });
 
 const CONVERSATION = WATSON.conversation({
-  username: CONFIG.ConUsername,
-  password: CONFIG.ConPassword,
+  username: credentials.conversation.username,
+  password: credentials.conversation.password,
   version: 'v1',
   version_date: '2016-07-11'
 });
 
 const TEXT_TO_SPEECH = WATSON.text_to_speech({
-  username: CONFIG.TTSUsername,
-  password: CONFIG.TTSPassword,
+  username: credentials.text_to_speech.username,
+  password: credentials.text_to_speech.password,
   version: 'v1'
 });
 
 const DISCOVERY = WATSON.discovery({
-  username: CONFIG.DiscoUsername,
-  password: CONFIG.DiscoPassword,
+  username: credentials.discovery.username,
+  password: credentials.discovery.password,
   version: 'v1',
   version_date: '2017-08-01'
 });
+
+// these are the hardware capabilities that TJBot needs
+var hardware = ['microphone', 'speaker'];
+
+// set up TJBot's configuration
+var tjConfig = {
+  log: {
+      level: 'verbose'
+  },
+  listen: {
+    microphoneDeviceId: "plughw:1,0", // plugged-in USB card 1, device 0; see arecord -l for a list of recording devices
+    inactivityTimeout: -1, // -1 to never timeout or break the connection. Set this to a value in seconds e.g 120 to end connection after 120 seconds of silence
+    language: 'en-US' // see TJBot.prototype.languages.listen
+  },
+  speak: {
+    language: 'en-US', // see TJBot.prototype.languages.speak
+    voice: undefined, // use a specific voice; if undefined, a voice is chosen based on robot.gender and speak.language
+    speakerDeviceId: "plughw:0,0" // plugged-in USB card 1, device 0; see aplay -l for a list of playback devices
+  }
+};
+
+// instantiate our TJBot!
+var tj = new TJBot(hardware, tjConfig, credentials);
 
 
 /**
@@ -540,20 +567,24 @@ const getEmotion = (text) => {
  * Convert text to speech.
  */
 const speakResponse = (text) => {
-  const params = {
-    text: text,
-    voice: CONFIG.voice,
-    accept: 'audio/wav'
-  };
-  TEXT_TO_SPEECH.synthesize(params)
-  .pipe(FS.createWriteStream('output.wav'))
-  .on('close', () => {
-    PROBE('output.wav', function(err, probeData) {
-      pauseDuration = probeData.format.duration + 0.2;
-      MIC_INSTANCE.pause();
-      PLAYER.play('output.wav');
+  if (CONFIG.outputType === 'TJBot') {
+    tj.speak(text);
+  } else {
+    const params = {
+      text: text,
+      voice: CONFIG.voice,
+      accept: 'audio/wav'
+    };
+    TEXT_TO_SPEECH.synthesize(params)
+    .pipe(FS.createWriteStream('output.wav'))
+    .on('close', () => {
+      PROBE('output.wav', function(err, probeData) {
+        pauseDuration = probeData.format.duration + 0.2;
+        MIC_INSTANCE.pause();
+        PLAYER.play('output.wav');
+      });
     });
-  });
+  }
 };
 
 
@@ -637,12 +668,12 @@ function mlbConversation() {
   console.log('TJBot is listening, you may speak now.');
   speakResponse('Hi there, I am awake.');
 
-  textStream.on('data', (user_speech_text) => {
+  tj.listen((user_speech_text) => {
     userSpeechText = user_speech_text.toLowerCase();
     console.log('\n\nWatson hears: ', user_speech_text);
     printContext('before call 1:');
     CONVERSATION.message({
-      workspace_id: CONFIG.ConWorkspace,
+      workspace_id: CONFIG.conversationWorkspaceId,
       input: {'text': user_speech_text},
       context: context
     }, (err, response) => {
@@ -661,7 +692,7 @@ function mlbConversation() {
           context.emotion = detectedEmotion.emotion;
           printContext('before call 2:');
           CONVERSATION.message({
-            workspace_id: CONFIG.ConWorkspace,
+            workspace_id: CONFIG.conversationWorkspaceId,
             input: {'text': userSpeechText},
             context: context
           }, (err, response) => {
@@ -677,7 +708,7 @@ function mlbConversation() {
         context.standings = getCurrentStandings(context.my_team, mlbStandings);
         printContext('before call 3:');
         CONVERSATION.message({
-          workspace_id: CONFIG.ConWorkspace,
+          workspace_id: CONFIG.conversationWorkspaceId,
           input: {'text': userSpeechText},
           context: context
         }, (err, response) => {
