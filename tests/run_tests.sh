@@ -8,7 +8,7 @@ fi
 FILE='./config.js'
 /bin/cat <<EOM >$FILE
 // set FAKE service credentials to make test happy
-// Watson Speech To Text 
+// Watson Speech To Text
 exports.STTUsername = 'edfd7341-315a-41zz-XXXb-a0b528430561';
 exports.STTPassword = 'xGJlOXXXkLZK';
 // Watson Tone Analyzer
@@ -27,8 +27,8 @@ exports.DiscoPassword = 'FT74XXXXFbkT';
 exports.DiscoEnvironmentId = '1323e589-7b5b-49b0-87a5-43aedbXXXXa9';
 exports.DiscoCollectionId = 'a2dd4607-50a2-48f6-XXXX-27f38587d651';
 // Twilio Account
-exports.TwilioAccountSID = 'AC0XXXXdb9ce1f07ebd6064f56c5d6e37a'; 
-exports.TwilioAuthToken = 'a7b16830a0ttf13b8f28d44XXXX61a26'; 
+exports.TwilioAccountSID = 'AC0XXXXdb9ce1f07ebd6064f56c5d6e37a';
+exports.TwilioAuthToken = 'a7b16830a0ttf13b8f28d44XXXX61a26';
 exports.TwilioPhoneNo = '+19165555555';
 EOM
 

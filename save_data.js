@@ -19,10 +19,10 @@
 /**
  * This purpose of this script is to save off all MLB data for off-season use.
  * Files will written to the data directory with a '-new' suffix.
- * 
- * NOTE: this script should only be run during the season, when MLB 
- * data is available. 
- * 
+ *
+ * NOTE: this script should only be run during the season, when MLB
+ * data is available.
+ *
  * Here are the steps needed to use these new files:
  * 1) Run this script
  * 2) If files are correct, overwrite existing versions:
@@ -60,8 +60,8 @@ const MLB_DATA_KEY = CONFIG.MLBFantasySubscriptionKey;
  * Get current date
  */
 function getCurrentDate() {
-  var date;    
-  date = new Date(MLB_SEASON, 8, 28);        
+  var date;
+  date = new Date(MLB_SEASON, 8, 28);
   return date;
 }
 
@@ -89,7 +89,7 @@ function getMlbTeams() {
         jsonfile.writeFile(file, mlbTeams, {spaces: 2}, function (err) {
           console.error(err);
         });
-  
+
         return resolve();
       })
       .catch(function (err) {
@@ -154,7 +154,7 @@ function getMlbSchedules() {
       day = ("0" + date.getDate()).slice(-2);
       const options = {
         method: 'GET',
-        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/' + MLB_SEASON + '-' + 
+        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/' + MLB_SEASON + '-' +
               monthNames[month] + '-' + day,
         headers: {
           'Host': 'api.fantasydata.net',
@@ -167,7 +167,7 @@ function getMlbSchedules() {
           daySchedule = JSON.parse(response);
           if (daySchedule.length > 0) {
             console.log('Retrieved schedule for date: ' + daySchedule[0].Day);
-            // Save each date in array so that they can be sorted 
+            // Save each date in array so that they can be sorted
             // after all dates are retrieved.
             mlbScheduleDates[mlbScheduleDates.length] = daySchedule;
           } else {
@@ -181,7 +181,7 @@ function getMlbSchedules() {
             jsonfile.writeFile(file, mlbScheduleDates, {spaces: 2}, function (err) {
               console.error(err);
             });
-      
+
             return resolve();
           }
         })
@@ -235,8 +235,8 @@ function loadData() {
  */
 function exitWhenDone() {
   if (mlbTeamsRetrieved && mlbStandingsRetrieved && mlbScheduleRetrieved) {
-    process.exit(0);    
-  }  
+    process.exit(0);
+  }
 }
 
 // Start by loading MLB data

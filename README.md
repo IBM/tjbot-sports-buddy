@@ -312,10 +312,10 @@ We have seen this error on Ubuntu, and it is due to microphone issues.
 The first step is to diagnose the problem. In [run.js](run.js), go to the following object and modify `debug` to true:
 
 ```
-const MIC_PARAMS = { 
-  rate: 44100, 
-  channels: 2, 
-  debug: true, 
+const MIC_PARAMS = {
+  rate: 44100,
+  channels: 2,
+  debug: true,
   exitOnSilence: 6
 };
 ```
@@ -340,11 +340,11 @@ card 2: C320M [Plantronics C320-M], device 0: USB Audio [USB Audio]
 ```
 Then add the card and device (`hw:card,device`) number to your microphone params. For example to use the `Plantronics` card above:
 ```
-const MIC_PARAMS = { 
-  rate: 44100, 
-  channels: 2, 
+const MIC_PARAMS = {
+  rate: 44100,
+  channels: 2,
   device: 'hw:2,0',
-  debug: true, 
+  debug: true,
   exitOnSilence: 6
 };
 ```
@@ -358,7 +358,7 @@ It means your device is being used by another process. Try the following:
 
 If you still get the error, reboot.
 
-> **NOTE:** make sure you set `debug:false` after everything is working, otherwise too many log messages will be output to the console. 
+> **NOTE:** make sure you set `debug:false` after everything is working, otherwise too many log messages will be output to the console.
 
 ### TJBot never speaks and you ONLY see "Retrieved schedule for date: NO GAMES FOUND" messages.
 
