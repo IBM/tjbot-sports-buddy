@@ -51,7 +51,7 @@ would like to go directly to building this on a TJBot, jump to the section entit
 [Build a TJBot](#build-a-tjbot) before completing the following steps.
 
 1. [Clone the repo](#1-clone-the-repo)
-2. [Create Bluemix services](#2-create-bluemix-services)
+2. [Create IBM Cloud services](#2-create-bluemix-services)
 3. [Configure Watson Conversation](#3-configure-watson-conversation)
 4. [Enable Watson Discovery](#4-enable-watson-discovery)
 5. [Enable Watson Speech to Text](#5-enable-watson-speech-to-text)
@@ -69,7 +69,7 @@ Clone the `tjbot-sports-buddy` locally. In a terminal, run:
 
 We’ll be using the file [`data/workspace.json`](data/workspace.json)
 
-## 2. Create Bluemix services
+## 2. Create IBM Cloud services
 
 Create the following services:
 
