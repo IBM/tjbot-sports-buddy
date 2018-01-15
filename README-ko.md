@@ -34,7 +34,7 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 
 ## 주요 기술
 
-* [Twilio](https://www.twilio.com/): 음성, 메시징 및 VoIP를 웹 및 모바일 앱에 통합시킵니다. 
+* [Twilio](https://www.twilio.com/): 음성, 메시징 및 VoIP를 웹 및 모바일 앱에 통합시킵니다.
 * [MLB Fantasy Data](https://fantasydata.com/): 실시간 스포츠 데이터와 컨텐트를 전셰계의 자사 고객, 미디어, 모바일 고객에게 제공하는 스포츠 정보 전문 제공업체입니다.
 * [Node.js](https://nodejs.org/en/): 확장 가능한 애플리케이션을 빌드하도록 설계된 비동기 이벤트 반응형(event-driven) JavaScript 런타임입니다.
 
@@ -48,7 +48,7 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 이 앱은 TJBot에서 실행되도록 설계되었지만 오디오 컨트롤(특히 마이크 입력 장치 및 출력 스피커)을 지원하는 모든 표준 워크 스테이션 또는 랩탑에서 실행할 수 있습니다. 먼저 노트북에서 이 작업을 진행하는 것이 더 간단할 수 있습니다. TJBot에서 직접 빌드하려면 다음 단계를 완료하기 전에 [TJBot 만들기](#tjbot-만들기) 섹션으로 이동하십시오.
 
 1. [저장소 복제](#1-저장소-복제)
-2. [Bluemix 서비스 생성](#2-bluemix-서비스-생성)
+2. [IBM Cloud 서비스 생성](#2-bluemix-서비스-생성)
 3. [Watson Conversation 구성](#3-watson-conversation-구성)
 4. [Watson Discovery 사용](#4-watson-discovery-사용)
 5. [Watson Speech to Text 사용](#5-watson-speech-to-text-사용)
@@ -66,7 +66,7 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 
 [`data/workspace.json`](data/workspace.json)파일도 함께 사용할 것입니다.
 
-## 2. Bluemix 서비스 생성
+## 2. IBM Cloud 서비스 생성
 
 다음 서비스를 생성하십시오.:
 
@@ -191,7 +191,7 @@ $ node run.js
 
 TJBot을 사용한 샘플 대화의 텍스트 버전 :
 
->**You:** "Hello Watson" 
+>**You:** "Hello Watson"
 
 >**TJBot:** "Hello. I'm Watson and I love baseball. Who's your favorite team?"
 
@@ -224,7 +224,7 @@ TJBot을 사용한 샘플 대화의 텍스트 버전 :
 - *Watson Text-To-Speech:* TJ Bot 응답을 음성으로 변환합니다.
 - *Watson Tone Analyzer:* 자신이 가장 좋아하는 팀에 대한 사용자의 감정에 기반하여 적절한 응답을 결정합니다
 - *Watson Discovery:* 팀에 대한 헤드 라인 링크를 생성합니다.
-- *Fantasy Data:* 팀의 예정된 경기 일정을 가져옵니다. 
+- *Fantasy Data:* 팀의 예정된 경기 일정을 가져옵니다.
 - *Twilio:* 사용자에게 팀 일정과 관련 뉴스를 SMS로 보냅니다.
 
 ## TJBot 만들기
@@ -240,7 +240,7 @@ TJBot을 사용한 샘플 대화의 텍스트 버전 :
 - Node.js 설정
 - 오디오 지원 및 문제 해결
 
-위의 과정을 통해 TJBot을 만들고 실행하셨다면, 위의 1 - 10 단계를 수행하여, **TJBot Sports Buddy** 애플리케이션을 실행합니다. 
+위의 과정을 통해 TJBot을 만들고 실행하셨다면, 위의 1 - 10 단계를 수행하여, **TJBot Sports Buddy** 애플리케이션을 실행합니다.
 
 # 문제 해결
 

@@ -110,9 +110,9 @@ var tj = new TJBot(hardware, tjConfig, credentials);
  * Create Twilio Client.
  */
 const TWILIO = require('twilio')(
-  CONFIG.TwilioAccountSID, 
+  CONFIG.TwilioAccountSID,
   CONFIG.TwilioAuthToken
-); 
+);
 const TWILIO_PHONE_NO = CONFIG.TwilioPhoneNo;
 // If phone number found in config file, use it.
 if (CONFIG.UserPhoneNo) {
@@ -130,10 +130,10 @@ const MLB_DATA_KEY = CONFIG.MLBFantasySubscriptionKey;
 /**
  * Create and configure the microphone.
  */
-const MIC_PARAMS = { 
-  rate: 44100, 
-  channels: 2, 
-  debug: false, 
+const MIC_PARAMS = {
+  rate: 44100,
+  channels: 2,
+  debug: false,
   exitOnSilence: 6
 };
 const MIC_INSTANCE = MIC(MIC_PARAMS);
@@ -145,7 +145,7 @@ MIC_INPUT_STREAM.on('pauseComplete', ()=> {
   // Stop listening when speaker is talking.
   setTimeout(function() {
       MIC_INSTANCE.resume();
-      console.log('Microphone resumed.');     
+      console.log('Microphone resumed.');
   }, Math.round(pauseDuration * 1000));
 });
 
@@ -156,9 +156,9 @@ function getCurrentDate() {
   var date;
   if (OFF_SEASON) {
     // all saved data is from Sept 28, 2017
-    date = new Date(2017, 8, 28);        
+    date = new Date(2017, 8, 28);
   } else {
-    date = new Date();    
+    date = new Date();
   }
   return date;
 }
@@ -237,7 +237,7 @@ function getMlbSchedules() {
       day = ("0" + date.getDate()).slice(-2);
       const options = {
         method: 'GET',
-        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/' + MLB_SEASON + '-' + 
+        uri: 'https://api.fantasydata.net/mlb/v2/JSON/GamesByDate/' + MLB_SEASON + '-' +
               monthNames[month] + '-' + day,
         headers: {
           'Host': 'api.fantasydata.net',
@@ -250,7 +250,7 @@ function getMlbSchedules() {
           daySchedule = JSON.parse(response);
           if (daySchedule.length > 0) {
             console.log('Retrieved schedule for date: ' + daySchedule[0].Day);
-            // Save each date in array so that they can be sorted 
+            // Save each date in array so that they can be sorted
             // after all dates are retrieved.
             mlbScheduleDates[mlbScheduleDates.length] = daySchedule;
           } else {
@@ -277,11 +277,11 @@ function getMlbSchedules() {
 function sortSchedule() {
   var date = getCurrentDate();
   var daysProcessed = 0;
-  
+
   while (daysProcessed < 7) {
     date.setDate(date.getDate() + 1);
     for (let i = 0; i < mlbScheduleDates.length; i++) {
-      if (mlbScheduleDates[i][0].Day.substring(5,10) === 
+      if (mlbScheduleDates[i][0].Day.substring(5,10) ===
            date.toJSON().substring(5,10)) {
         mlbSchedule = mlbSchedule.concat(mlbScheduleDates[i]);
         daysProcessed += 1;
@@ -328,7 +328,7 @@ exports.getCurrentStandings = getCurrentStandings;
 
 /**
  * Get upcoming MLB schedule for a specific team.
- * 
+ *
  * @param {String} team
  *   Team to get schedule for.
  */
@@ -357,16 +357,16 @@ function getUpcomingSchedule(team) {
       dayCtr++;
       for (let i = 0; i < mlbSchedule.length; i++) {
         // Limit schedule to just next 5 games.
-        if (mlbSchedule[i].Day.substring(5,10) === 
+        if (mlbSchedule[i].Day.substring(5,10) ===
             date.toJSON().substring(5,10)) {
           var game = '';
           if (mlbSchedule[i].AwayTeam === teamKey) {
             game = mlbSchedule[i].DateTime.substring(5,10) +
-              ' ' + mlbSchedule[i].DateTime.substring(11,16) +  
+              ' ' + mlbSchedule[i].DateTime.substring(11,16) +
               ' @ ' + mlbSchedule[i].HomeTeam + '\n';
           } else if (mlbSchedule[i].HomeTeam === teamKey) {
-            game = mlbSchedule[i].DateTime.substring(5,10) + 
-              ' ' + mlbSchedule[i].DateTime.substring(11,16) +  
+            game = mlbSchedule[i].DateTime.substring(5,10) +
+              ' ' + mlbSchedule[i].DateTime.substring(11,16) +
               ' vs. ' + mlbSchedule[i].AwayTeam + '\n';
           }
           if (game) {
@@ -394,7 +394,7 @@ function getUpcomingSchedule(team) {
 
 /**
  * Convert phone number from words to numbers.
- * 
+ *
  * @param {String} spokenPhoneNumber
  *   Text of spoken phone number that needs to be converted to digits.
  */
@@ -454,7 +454,7 @@ function textTeamInfo() {
 
   if (textPhoneNo.length != 12) {
     console.log('Unable to text: bad phone number: ', textPhoneNo);
-    context.text_sent = 'failure';      
+    context.text_sent = 'failure';
     return;
   }
 
@@ -467,12 +467,12 @@ function textTeamInfo() {
   DISCOVERY.query({
     environment_id: CONFIG.DiscoEnvironmentId,
     collection_id: CONFIG.DiscoCollectionId,
-    query: context.my_team + ' baseball', 
+    query: context.my_team + ' baseball',
     count: 5
   }, (err, response) => {
     if (response.results) {
       for (let i = 0; i < response.results.length; i++) {
-        // Make sure headline is not a duplicate, which Watson news 
+        // Make sure headline is not a duplicate, which Watson news
         // does on occasion.
         headline = response.results[i].title + ' - ' + response.results[i].url;
         var dup = false;
@@ -485,8 +485,8 @@ function textTeamInfo() {
         if (! dup) {
           headlines.push(headline);
           if (headlines.length >= numHeadlines) {
-            break; 
-          }          
+            break;
+          }
         }
       }
     }
@@ -495,22 +495,22 @@ function textTeamInfo() {
     sched = getUpcomingSchedule(context.my_team);
 
     // Text schedule to user.
-    context.text_sent = 'success';      
-    TWILIO.messages.create({     
-        to: textPhoneNo,     
-        from: TWILIO_PHONE_NO,     
-        body: sched, 
+    context.text_sent = 'success';
+    TWILIO.messages.create({
+        to: textPhoneNo,
+        from: TWILIO_PHONE_NO,
+        body: sched,
     }, function(err, message) {
-        console.log(message.sid); 
+        console.log(message.sid);
         // Now text each headline to user.
         for (let i = 0; i < headlines.length; i++) {
           /* jshint loopfunc: true */
-          TWILIO.messages.create({     
-              to: textPhoneNo,     
-              from: TWILIO_PHONE_NO,     
+          TWILIO.messages.create({
+              to: textPhoneNo,
+              from: TWILIO_PHONE_NO,
               body: headlines[i],
           }, function(err, message) {
-              console.log(message.sid); 
+              console.log(message.sid);
           });
       }
     });
@@ -593,8 +593,8 @@ const speakResponse = (text) => {
  * True if we are attempting to validate the team the user wishes to follow.
  */
 function validateTeamStep() {
-  if (context && 
-      context.system && 
+  if (context &&
+      context.system &&
       context.system.dialog_stack[0] === 'Validate Team') {
     return true;
   }
@@ -607,8 +607,8 @@ function validateTeamStep() {
  * True if we are attempting to validate the users team sentiment tone.
  */
 function validateEmotionStep() {
-  if (context && 
-      context.system && 
+  if (context &&
+      context.system &&
       context.system.dialog_stack[0] === 'Validate Emotion') {
     return true;
   }
@@ -621,8 +621,8 @@ function validateEmotionStep() {
  * True if we are attempting to text team info to the user.
  */
 function textTeamInfoStep() {
-  if (context && 
-      context.system && 
+  if (context &&
+      context.system &&
       context.system.dialog_stack[0] === 'Text Team Info') {
     return true;
   }
@@ -632,7 +632,7 @@ function textTeamInfoStep() {
 
 /**
  * Log Watson Conversation context values..
- * 
+ *
  * @param {String} header
  *   First line of log message.
  */
@@ -642,7 +642,7 @@ function printContext(header) {
 
     if (context.system) {
       if (context.system.dialog_stack) {
-        console.log("     dialog_stack: ['" + 
+        console.log("     dialog_stack: ['" +
                     context.system.dialog_stack + "']");
       }
       if (context.emotion) {
@@ -656,7 +656,7 @@ function printContext(header) {
       }
       if (context.phoneno) {
         console.log("     phoneno: " + context.phoneno);
-      }    
+      }
     }
   }
 }
@@ -736,14 +736,14 @@ function init() {
     mlbTeams = JSON.parse(fs.readFileSync('data/mlb-teams.json', 'utf8'));
     mlbStandings = JSON.parse(fs.readFileSync('data/mlb-standings.json', 'utf8'));
     mlbScheduleDates = JSON.parse(fs.readFileSync('data/mlb-schedule.json', 'utf8'));
-    
+
     sortSchedule();
 
     mlbTeamsRetrieved = true;
     mlbStandingsRetrieved = true;
     mlbScheduleRetrieved = true;
     startConversationIfReady();
-    
+
   } else {
     // Generate data to be used during the conversation.
     getMlbTeams()
@@ -783,12 +783,12 @@ function init() {
  */
 function startConversationIfReady() {
   if (mlbTeamsRetrieved && mlbStandingsRetrieved && mlbScheduleRetrieved) {
-    // Initialize microphone    
+    // Initialize microphone
     MIC_INSTANCE.start();
 
     // Begin watson conversation.
-    mlbConversation();    
-  }  
+    mlbConversation();
+  }
 }
 
 // Start by loading MLB data

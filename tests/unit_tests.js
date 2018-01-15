@@ -13,7 +13,7 @@ describe('Convert Phone Number', function() {
 
 describe('Get Current Standings for Team', function() {
   it('getCurrentStandings() should return teams current place', function() {
-    var mlbStandings = [ 
+    var mlbStandings = [
       { Name: 'Twins', League: 'AL', Division: 'Central' },
       { Name: 'Indians', League: 'AL', Division: 'Central' },
       { Name: 'Tigers', League: 'AL', Division: 'Central' },

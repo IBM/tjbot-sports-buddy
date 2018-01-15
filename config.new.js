@@ -55,8 +55,8 @@ exports.discoEnvironmentId = 'system';
 exports.discoCollectionId = 'news';
 
 // Twilio account data
-exports.TwilioAccountSID = ''; 
-exports.TwilioAuthToken = ''; 
+exports.TwilioAccountSID = '';
+exports.TwilioAuthToken = '';
 // Include country code with following numbers, e.g. '+12223334444'
 exports.TwilioPhoneNo = '';
 // Only set this if you would like all texts being sent to one number

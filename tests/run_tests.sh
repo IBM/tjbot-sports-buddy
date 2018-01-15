@@ -38,8 +38,8 @@ exports.credentials.discovery = {
 exports.discoEnvironmentId = 'system';
 exports.discoCollectionId = 'news';
 // Twilio Account
-exports.TwilioAccountSID = 'AC0XXXXdb9ce1f07ebd6064f56c5d6e37a'; 
-exports.TwilioAuthToken = 'a7b16830a0ttf13b8f28d44XXXX61a26'; 
+exports.TwilioAccountSID = 'AC0XXXXdb9ce1f07ebd6064f56c5d6e37a';
+exports.TwilioAuthToken = 'a7b16830a0ttf13b8f28d44XXXX61a26';
 exports.TwilioPhoneNo = '+19165555555';
 EOM
 
