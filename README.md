@@ -4,10 +4,7 @@
 
 *Read this in other languages: [한국어](README-ko.md).*
 
-In this developer journey we will build a TJBot that knows baseball. Using
-Watson Discovery, TJBot will give you insight about your favorite teams, such as
-their current league standing, their upcoming shedule, and links to a few
-relevant articles from Watson News.
+In this developer journey we will build a TJBot that knows baseball. Using Watson Discovery, TJBot will give you insight about your favorite teams, such as their current league standing, their upcoming shedule, and links to a few relevant articles from Watson News.
 
 When the reader has completed this journey, they will understand how to:
 
@@ -44,11 +41,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 
 # Steps
 
-This app is designed to be run on a TJBot, but it can work on any standard workstation
-or laptop that supports audio controls - specifically a microphone input device and an
-output speaker. It may be simplier to first get this working on your laptop. If you
-would like to go directly to building this on a TJBot, jump to the section entitled
-[Build a TJBot](#build-a-tjbot) before completing the following steps.
+This app is designed to be run on a TJBot, but it can work on any standard workstation or laptop that supports audio controls - specifically a microphone input device and an output speaker. It may be simplier to first get this working on your laptop. If you would like to go directly to building this on a TJBot, jump to the section entitled [Build a TJBot](#build-a-tjbot) before completing the following steps.
 
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create IBM Cloud services](#2-create-bluemix-services)
@@ -88,16 +81,13 @@ Launch the **Watson Conversation** tool. Use the **import** icon button on the r
   <img width="400" height="55" src="doc/source/images/import_conversation_workspace.png">
 </p>
 
-Find the local version of [`data/workspace.json`](data/workspace.json) and select
-**Import**. Find the **Workspace ID** by clicking on the context menu of the new
-workspace and select **View details**. Save this ID for later.
+Find the local version of [`data/workspace.json`](data/workspace.json) and select **Import**. Find the **Workspace ID** by clicking on the context menu of the new workspace and select **View details**. Save this ID for later.
 
 <p align="center">
   <img width="400" height="250" src="doc/source/images/open_conversation_menu.png">
 </p>
 
-*Optionally*, to view the conversation dialog select the workspace and choose the
-**Dialog** tab, here's a snippet of the dialog:
+*Optionally*, to view the conversation dialog select the workspace and choose the **Dialog** tab, here's a snippet of the dialog:
 
 ![](doc/source/images/dialog.png)
 
@@ -141,9 +131,7 @@ Click **View Credentials** and save the **username** and **password** values.
 
 ## 8. Register for Twilio Service
 
-One of the main functions of the `tjbot-sports-buddy` is to text upcoming
-games and news headlines about the users favorite baseball teams. To send
-SMS text messages, we use the Twilio service. Register for a free trial account at [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio).
+One of the main functions of the `tjbot-sports-buddy` is to text upcoming games and news headlines about the users favorite baseball teams. To send SMS text messages, we use the Twilio service. Register for a free trial account at [https://www.twilio.com/try-twilio](https://www.twilio.com/try-twilio).
 
 As part of the service, you will be assigned the following values, which you will need to save, they are accessible through your user account settings:
 
@@ -152,30 +140,23 @@ As part of the service, you will be assigned the following values, which you wil
 
 ![](doc/source/images/twilio.png)
 
-Lastly, you will need a Twilio supplied phone number, where all texts will originate from. To create one, navigate to the *Programmable SMS* option
-in the context menu.
+Lastly, you will need a Twilio supplied phone number, where all texts will originate from. To create one, navigate to the *Programmable SMS* option in the context menu.
 
 ![](doc/source/images/number.png)
 
 - Twilio supplied phone number
 
-By default, you will only be able to send SMS text messages to the phone
-number you provided to create your account. To send messages to other
-numbers, you need to add them at [https://www.twilio.com/console](https://www.twilio.com/).
-For each number you enter, the user of the number will be asked to verify
-and then be sent a verification code. You will then need to enter this
-verification code to complete the registration process.
+By default, you will only be able to send SMS text messages to the phone number you provided to create your account. To send messages to other numbers, you need to add them at [https://www.twilio.com/console](https://www.twilio.com/). For each number you enter, the user of the number will be asked to verify and then be sent a verification code. You will then need to enter this verification code to complete the registration process.
+
+> **NOTE:** with a trail account, you may not be able to text to phone numbers with an area code that is different than the one used for your Twilio supplied number.  
 
 ## 9. Register for MLB Fantasy Data Service
 
-Another feature of the `tjbot-sports-buddy` is being able to provide up to
-the minute Major League Baseball (MLB) stats. Specifically, schedules and
-standings. To retrieve this data, we use APIs supplied by FantasyData.
+Another feature of the `tjbot-sports-buddy` is being able to provide up to the minute Major League Baseball (MLB) stats. Specifically, schedules and standings. To retrieve this data, we use APIs supplied by FantasyData.
 
 Register for a free trial accoount at [https://developer.fantasydata.com](https://developer.fantasydata.com).
 
-Once registered, save the supplied subscription key, available through your
-profile.
+Once registered, save the supplied subscription key, available through your profile.
 
 ![](doc/source/images/mlb.png)
 
@@ -244,8 +225,7 @@ Here is a recap of the services used to perform this conversation:
 
 ## Build a TJBot
 
-To build your TJBot, follow the tutorial entitled:
-[Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson-developer-cloud/build-a-chatbot-that-cares-part-2-66367cf26e4b).
+To build your TJBot, follow the tutorial entitled: [Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson-developer-cloud/build-a-chatbot-that-cares-part-2-66367cf26e4b).
 
 It provides a comprehensive guide for:
 
