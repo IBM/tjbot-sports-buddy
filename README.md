@@ -44,7 +44,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 This app is designed to be run on a TJBot, but it can work on any standard workstation or laptop that supports audio controls - specifically a microphone input device and an output speaker. It may be simplier to first get this working on your laptop. If you would like to go directly to building this on a TJBot, jump to the section entitled [Build a TJBot](#build-a-tjbot) before completing the following steps.
 
 1. [Clone the repo](#1-clone-the-repo)
-2. [Create IBM Cloud services](#2-create-bluemix-services)
+2. [Create IBM Cloud services](#2-create-ibm-cloud-services)
 3. [Configure Watson Conversation](#3-configure-watson-conversation)
 4. [Enable Watson Discovery](#4-enable-watson-discovery)
 5. [Enable Watson Speech to Text](#5-enable-watson-speech-to-text)
