@@ -1,7 +1,3 @@
-// Output device
-exports.outputType = 'TJBot';   
-//exports.outputType = '';      // use this if testing on OSX hardware
-
 // The attention word to wake up the robot.
 exports.attentionWord = 'watson';
 
@@ -16,43 +12,30 @@ exports.voice = 'en-US_MichaelVoice';
 // en-US_LisaVoice
 // en-US_MichaelVoice (the default)
 
-// Create the credentials object for exporting Watson Service credentials
-exports.credentials = {};
-
 // Credentials for Watson Speech to Text service
-exports.credentials.speech_to_text = {
-	username: '',
-	password: ''
-}
+exports.STTUsername = '';
+exports.STTPassword = '';
 
 // Credentials for Watson Conversation service
-exports.credentials.conversation = {
-	username: '',
-	password: ''
-};
-exports.conversationWorkspaceId = ''; 
+exports.ConUsername = '';
+exports.ConPassword = '';
+exports.ConWorkspace = ''
 
 //Credentials for Watson Tone Analyzer service
-exports.credentials.tone_analyzer = {
-	username: '',
-	password: ''
-};
+exports.ToneUsername = '';
+exports.TonePassword = '';
 
 //Credentials for Watson Text to Speech service
-exports.credentials.text_to_speech = {
-	username: '',
-	password: ''
-};
+exports.TTSUsername = '';
+exports.TTSPassword = '';
 
 // Credentials for Watson Discovery service
-exports.credentials.discovery = {
-	username: '',
-	password: ''
-};
+exports.DiscoUsername = '';
+exports.DiscoPassword = '';
 // NOTE: starting with v2017-08-01, the Watson News collection
 // always uses the following IDs
-exports.discoEnvironmentId = 'system';
-exports.discoCollectionId = 'news';
+exports.DiscoEnvironmentId = 'system';
+exports.DiscoCollectionId = 'news';
 
 // Twilio account data
 exports.TwilioAccountSID = '';

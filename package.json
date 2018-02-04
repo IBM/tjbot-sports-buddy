@@ -21,7 +21,6 @@
     "prompt": "^1.0.0",
     "raspicam": "git+https://github.com/troyth/node-raspicam.git",
     "request-promise": "^4.2.1",
-    "tjbot": "^1.3.0",
     "twilio": "^3.0.0",
     "watson-developer-cloud": "^2.32.0"
   },
