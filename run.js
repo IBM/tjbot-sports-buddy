@@ -634,7 +634,7 @@ function printContext(header) {
  * Send significant responses from Watson to the console.
  */
 function watsonSays(response) {
-  if (response !== 'undefined') {
+  if (typeof(response) !== 'undefined') {
     console.log('Watson says:', response);
   }
 }
