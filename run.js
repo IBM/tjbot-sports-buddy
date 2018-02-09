@@ -500,7 +500,7 @@ function textTeamInfo() {
       printContext('after call 4:');
       watsonResponse = response.output.text[0];
       speakResponse(watsonResponse);
-      console.log('Watson says:', watsonResponse);
+      watsonSays(watsonResponse);
     });
   });
 }
@@ -631,6 +631,15 @@ function printContext(header) {
 }
 
 /**
+ * Send significant responses from Watson to the console.
+ */
+function watsonSays(response) {
+  if (response !== 'undefined') {
+    console.log('Watson says:', response);
+  }
+}
+
+/**
  * Watson conversation with user.
  */
 function mlbConversation() {
@@ -653,7 +662,7 @@ function mlbConversation() {
       if (watson_response) {
         speakResponse(watson_response);
       }
-      console.log('Watson says:', watson_response);
+      watsonSays(watson_response);
 
       if (validateEmotionStep()) {
         // User has expressed sentiment about team.
@@ -669,7 +678,7 @@ function mlbConversation() {
             printContext('after call 2:');
             watson_response = response.output.text[0];
             speakResponse(watson_response);
-            console.log('Watson says:', watson_response);
+            watsonSays(watson_response);
           });
         });
       } else if (validateTeamStep()) {
@@ -685,7 +694,7 @@ function mlbConversation() {
           printContext('after call 3:');
           watson_response =  response.output.text[0];
           speakResponse(watson_response);
-          console.log('Watson says:', watson_response);
+          watsonSays(watson_response);
         });
       } else if (textTeamInfoStep()) {
         // User has requested that team info be texted to them.
