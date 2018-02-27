@@ -16,7 +16,7 @@ exports.voice = 'en-US_MichaelVoice';
 exports.STTUsername = '';
 exports.STTPassword = '';
 
-// Credentials for Watson Conversation service
+// Credentials for Watson Assistant for Business service
 exports.ConUsername = '';
 exports.ConPassword = '';
 exports.ConWorkspace = ''

@@ -7,7 +7,7 @@
 Nesta jornada do desenvolvedor, será desenvolvido um TJBot que entende de beisebol. Usando o Watson Discovery, o TJBot fornecerá informações sobre seus times preferidos, como posição atual na liga, próximos jogos e links para alguns artigos relevantes do Watson News.
 
 Depois de concluir esta jornada, o leitor saberá como:
-* Desenvolver um TJBot que conversa usando o Watson Conversation
+* Desenvolver um TJBot que conversa usando o Watson Assistant for Business
 * Usar os serviços Watson Text to Speech e Speech to Text para conversar com o TJBot
 * Usar o Watson Tone Analyzer para determinar como você se sente em relação aos seus times preferidos
 * Usar o Watson Discovery News para encontrar notícias a respeito dos seus times preferidos
@@ -20,7 +20,7 @@ Depois de concluir esta jornada, o leitor saberá como:
 Deseja levar seu aplicativo Watson para o próximo nível? Quer aproveitar os ativos da marca Watson? Participe do programa [With Watson](https://www.ibm.com/watson/with-watson), que oferece recursos técnicos, de marketing e da marca exclusivos para amplificar e acelerar sua solução comercial incorporada do Watson.
 
 ## Componentes inclusos
-* [Watson Conversation](https://www.ibm.com/watson/developercloud/conversation.html): Desenvolva, teste e implemente um bot ou agente virtual em dispositivos móveis, plataformas de sistemas de mensagens ou até mesmo um robô físico.
+* [Watson Assistant for Business](https://www.ibm.com/watson/developercloud/conversation.html): Desenvolva, teste e implemente um bot ou agente virtual em dispositivos móveis, plataformas de sistemas de mensagens ou até mesmo um robô físico.
 * [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): Um mecanismo cognitivo de procura e analytics de conteúdo para aplicativos identificarem padrões, tendências e informações acionáveis.
 * [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): Converte textos escritos para áudios em linguagem natural, com suporte a vários idiomas e tipos de vozes.
 * [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): Um serviço que converte voz humana em textos escritos.
@@ -37,7 +37,7 @@ Deseja levar seu aplicativo Watson para o próximo nível? Quer aproveitar os at
 Este aplicativo foi criado para ser executado em um TJBot, mas pode funcionar em qualquer estação de trabalho ou laptop padrão com suporte para controles de áudio - especificamente, um dispositivo de entrada de microfone e um alto-falante de saída. Para começar, talvez seja mais simples instalar no seu laptop. Caso queira desenvolver diretamente em um TJBot, passe para a seção [Desenvolver um TJBot](#build-a-tjbot) antes de concluir as próximas etapas.
 1. [Clonar o repositório](#1-clone-the-repo)
 2. [Criar serviços do Bluemix](#2-create-bluemix-services)
-3. [Configurar o Watson Conversation](#3-configure-watson-conversation)
+3. [Configurar o Watson Assistant for Business](#3-configure-watson-conversation)
 4. [Ativar o Watson Discovery](#4-enable-watson-discovery)
 5. [Ativar o Watson Speech to Text](#5-enable-watson-speech-to-text)
 6. [Ativar o Watson Text to Speech](#6-enable-watson-text-to-speech)
@@ -54,13 +54,13 @@ Utilizaremos o arquivo [`data/workspace.json`](data/workspace.json)
 
 # 2. Criar serviços do Bluemix
 Crie os serviços a seguir:
-* [**Watson Conversation**](https://console.ng.bluemix.net/catalog/services/conversation)
+* [**Watson Assistant for Business**](https://console.ng.bluemix.net/catalog/services/conversation)
 * [**Watson Discovery**](https://console.ng.bluemix.net/catalog/services/discovery)
 * [**Watson Text to Speech**](https://console.ng.bluemix.net/catalog/services/text-to-speech/)
 * [**Watson Speech to Text**](https://console.ng.bluemix.net/catalog/services/speech-to-text/)
 * [**Watson Tone Analyzer**](https://console.ng.bluemix.net/catalog/services/tone-analyzer/)
-## 3. Configurar o Watson Conversation
-Acione a ferramenta **Watson Conversation**. Use o botão com o ícone **import** à direita
+## 3. Configurar o Watson Assistant for Business
+Acione a ferramenta **Watson Assistant for Business**. Use o botão com o ícone **import** à direita
 
 <p align="center">
   <img width="400" height="55" src="doc/source/images/import_conversation_workspace.png" />
@@ -72,7 +72,7 @@ Localize a versão local de [`data/workspace.json`](data/workspace.json) e selec
   <img width="400" height="250" src="doc/source/images/open_conversation_menu.png" />
 </p>
 
-*Como opção*, para visualizar o diálogo do Conversation, selecione a área de trabalho e escolha a guia **Dialog**. Este é um fragmento do diálogo:
+*Como opção*, para visualizar o diálogo do Assistant for Business, selecione a área de trabalho e escolha a guia **Dialog**. Este é um fragmento do diálogo:
 
 ![](doc/source/images/dialog.png)
 
@@ -185,7 +185,7 @@ Selecione o serviço **Watson Tone Analyzer**. Selecione o item do menu **Servic
 
  Segue uma recapitulação dos serviços usados para ter essa conversa:
 
- - *Watson Conversation:* O fluxo da conversa.
+ - *Watson Assistant for Business:* O fluxo da conversa.
  - *Watson Speech-To-Text:* Converte a entrada do usuário em texto.
  - *Watson Text-To-Speech:* Converte as respostas do TJBot em som.
  - *Watson Tone Analyzer:* Determina uma resposta adequada ao sentimento do usuário em relação ao seu time preferido.
@@ -271,7 +271,7 @@ card 2: C320M [Plantronics C320-M], device 0: USB Audio [USB Audio]
    rate: 44100,
    channels: 2,
    device: 'hw:2,0',
-   debug: true, exitOnSilence: 6 
+   debug: true, exitOnSilence: 6
  };
  ```
 
