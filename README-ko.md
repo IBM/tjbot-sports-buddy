@@ -8,7 +8,7 @@
 
 이 개발 과정을 마치면 다음과 같은 것을 이해하게 될 것입니다:
 
-* Watson Conversation을 사용한 대화형 TJBot의 작성
+* Watson Assistant을 사용한 대화형 TJBot의 작성
 * Watson Text to Speech 및 Speech to Text 서비스를 통한 TJBot과의 대화
 * Watson Tone Analyzer를 사용하여 좋아하는 팀에 대한 대중의 의견 분석 (감성 분석)
 * Watson Discovery를 사용하여 좋아하는 팀에 대한 뉴스 검색
@@ -25,7 +25,7 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 ## 포함된 구성요소
 
 
-* [Watson Conversation](https://www.ibm.com/watson/developercloud/conversation.html): 모바일 디바이스와 메신저 플랫폼 상에서, 심지어 물리적 로봇에서도 챗봇 또는 가상 에이전트를 빌드, 테스트하고 배포합니다.
+* [Watson Assistant](https://www.ibm.com/watson/developercloud/conversation.html): 모바일 디바이스와 메신저 플랫폼 상에서, 심지어 물리적 로봇에서도 챗봇 또는 가상 에이전트를 빌드, 테스트하고 배포합니다.
 * [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): 특정 패턴, 트렌드, 실행 가능한 인사이트를 도출하는 애플리케이션 개발을 위한 인공지능 기반 검색, 콘텐츠 분석 엔진입니다.
 * [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): 텍스트를 다양한 언어와 목소리를 통해 자연스럽게 들리는 음성 언어로 변환합니다.
 * [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): 음성을 텍스트로 변환합니다.(음성인식)
@@ -49,7 +49,7 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 
 1. [저장소 복제](#1-저장소-복제)
 2. [IBM Cloud 서비스 생성](#2-bluemix-서비스-생성)
-3. [Watson Conversation 구성](#3-watson-conversation-구성)
+3. [Watson Assistant 구성](#3-watson-conversation-구성)
 4. [Watson Discovery 사용](#4-watson-discovery-사용)
 5. [Watson Speech to Text 사용](#5-watson-speech-to-text-사용)
 6. [Watson Text to Speech 사용](#6-watson-text-to-speech-사용)
@@ -70,16 +70,16 @@ Watson 애플리케이션의 다음 레벨로 넘어가고 싶으신가요? Wats
 
 다음 서비스를 생성하십시오.:
 
-  * [**Watson Conversation**](https://console.ng.bluemix.net/catalog/services/conversation)
+  * [**Watson Assistant**](https://console.ng.bluemix.net/catalog/services/conversation)
   * [**Watson Discovery**](https://console.ng.bluemix.net/catalog/services/discovery)
   * [**Watson Text to Speech**](https://console.ng.bluemix.net/catalog/services/text-to-speech/)
   * [**Watson Speech to Text**](https://console.ng.bluemix.net/catalog/services/speech-to-text/)
   * [**Watson Tone Analyzer**](https://console.ng.bluemix.net/catalog/services/tone-analyzer/)
 
 
-## 3. Watson Conversation 구성
+## 3. Watson Assistant 구성
 
- **Watson Conversation** 도구를 실행합니다. 오른쪽의 **import** 아이콘 버튼을 사용합니다.
+ **Watson Assistant** 도구를 실행합니다. 오른쪽의 **import** 아이콘 버튼을 사용합니다.
 
 <p align="center">
   <img width="400" height="55" src="doc/source/images/import_conversation_workspace.png">
@@ -219,7 +219,7 @@ TJBot을 사용한 샘플 대화의 텍스트 버전 :
 
 이 대화를 하기 위해 사용된 서비스를 요약하면 다음과 같습니다:
 
-- *Watson Conversation:* 대화 흐름.
+- *Watson Assistant:* 대화 흐름.
 - *Watson Speech-To-Text:* 사용자 입력을 텍스트로 변환합니다.
 - *Watson Text-To-Speech:* TJ Bot 응답을 음성으로 변환합니다.
 - *Watson Tone Analyzer:* 자신이 가장 좋아하는 팀에 대한 사용자의 감정에 기반하여 적절한 응답을 결정합니다

@@ -11,7 +11,7 @@ relevant articles from Watson News.
 
 When the reader has completed this journey, they will understand how to:
 
-* Build a TJBot that converses using Watson Conversation
+* Build a TJBot that converses using Watson Assistant
 * Use Watson Text to Speech and Speech to Text services to converse with TJBot
 * Use Watson Tone Analyzer to determine your sentiment about your favorite teams
 * Use Watson Discovery News to find news articles about your favorite teams
@@ -26,7 +26,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 
 ## Included components
 
-* [Watson Conversation](https://www.ibm.com/watson/developercloud/conversation.html): Build, test and deploy a bot or virtual agent across mobile devices, messaging platforms, or even on a physical robot.
+* [Watson Assistant](https://www.ibm.com/watson/developercloud/conversation.html): Build, test and deploy a bot or virtual agent across mobile devices, messaging platforms, or even on a physical robot.
 * [Watson Discovery](https://www.ibm.com/watson/developercloud/discovery.html): A cognitive search and content analytics engine for applications to identify patterns, trends, and actionable insights.
 * [Watson Text to Speech](https://www.ibm.com/watson/developercloud/text-to-speech.html): Converts written text into natural sounding audio in a variety of languages and voices.
 * [Watson Speech to Text](https://www.ibm.com/watson/developercloud/speech-to-text.html): A service that converts human voice into written text.
@@ -52,7 +52,7 @@ would like to go directly to building this on a TJBot, jump to the section entit
 
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create IBM Cloud services](#2-create-ibm-cloud-services)
-3. [Configure Watson Conversation](#3-configure-watson-conversation)
+3. [Configure Watson Assistant](#3-configure-watson-conversation)
 4. [Enable Watson Discovery](#4-enable-watson-discovery)
 5. [Enable Watson Speech to Text](#5-enable-watson-speech-to-text)
 6. [Enable Watson Text to Speech](#6-enable-watson-text-to-speech)
@@ -73,16 +73,16 @@ We’ll be using the file [`data/workspace.json`](data/workspace.json)
 
 Create the following services:
 
-  * [**Watson Conversation**](https://console.ng.bluemix.net/catalog/services/conversation)
+  * [**Watson Assistant**](https://console.ng.bluemix.net/catalog/services/conversation)
   * [**Watson Discovery**](https://console.ng.bluemix.net/catalog/services/discovery)
   * [**Watson Text to Speech**](https://console.ng.bluemix.net/catalog/services/text-to-speech/)
   * [**Watson Speech to Text**](https://console.ng.bluemix.net/catalog/services/speech-to-text/)
   * [**Watson Tone Analyzer**](https://console.ng.bluemix.net/catalog/services/tone-analyzer/)
 
 
-## 3. Configure Watson Conversation
+## 3. Configure Watson Assistant
 
-Launch the **Watson Conversation** tool. Use the **import** icon button on the right
+Launch the **Watson Assistant** tool. Use the **import** icon button on the right
 
 <p align="center">
   <img width="400" height="55" src="doc/source/images/import_conversation_workspace.png">
@@ -234,7 +234,7 @@ Textual version of a sample conversation with TJBot:
 
 Here is a recap of the services used to perform this conversation:
 
-- *Watson Conversation:* The conversation flow.
+- *Watson Assistant:* The conversation flow.
 - *Watson Speech-To-Text:* Converts user input to text.
 - *Watson Text-To-Speech:* Converts TJ Bot replies to sound.
 - *Watson Tone Analyzer:* Determes an appropriate reply to the users sentiment about his favorite team.
