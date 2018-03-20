@@ -4,6 +4,8 @@
 
 *Read this in other languages: [한국어](README-ko.md).*
 
+> Watson Conversation is now Watson Assistant. Although some images in this code pattern may show the service as Watson Conversation, the steps and processes will still work.
+
 In this developer journey we will build a TJBot that knows baseball. Using
 Watson Discovery, TJBot will give you insight about your favorite teams, such as
 their current league standing, their upcoming shedule, and links to a few
