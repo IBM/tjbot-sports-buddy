@@ -5,7 +5,7 @@ Here is a general overview of some of the more important directories/files in th
 ```
 .
 ├── data
-│   └── workspace.json      // an export of the TJBot conversation workspace
+│   └── workspace.json      // an export of the TJBot assistant workspace
 ├── config.new.js           // copy to local file config.js to store all credentials and config items
 ├── run.js                  // Node.js app
 ```
