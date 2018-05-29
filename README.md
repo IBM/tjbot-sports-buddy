@@ -174,7 +174,7 @@ Another feature of the `tjbot-sports-buddy` is being able to provide up to
 the minute Major League Baseball (MLB) stats. Specifically, schedules and
 standings. To retrieve this data, we use APIs supplied by FantasyData.
 
-Register for a free trial accoount at [https://developer.fantasydata.com](https://developer.fantasydata.com).
+Register for a free trial account at [https://developer.fantasydata.com](https://developer.fantasydata.com).
 
 Once registered, save the supplied subscription key, available through your
 profile.
@@ -239,7 +239,7 @@ Here is a recap of the services used to perform this conversation:
 - *Watson Assistant:* The conversation flow.
 - *Watson Speech-To-Text:* Converts user input to text.
 - *Watson Text-To-Speech:* Converts TJ Bot replies to sound.
-- *Watson Tone Analyzer:* Determes an appropriate reply to the users sentiment about his favorite team.
+- *Watson Tone Analyzer:* Determines an appropriate reply to the users sentiment about his favorite team.
 - *Watson Discovery:* Generates headline links about the team.
 - *Fantasy Data:* Retrieves the current standing and upcoming schedule for the team.
 - *Twilio:* Texts team schedule and news to the user.
@@ -366,13 +366,13 @@ If you still get the error, reboot.
 
 This is most likely due to the baseball season being over, or your config file specifies the wrong baseball season.
 
-If the baseball season is over (runs from early April to late September), set the following flag in config.js:
+If the baseball season is over (runs from early April to late September), set the following flag in `config.js`:
 ```
 exports.offSeason = true;
 ```
 > **NOTE:** the data returned by TJBot will come from an archived version of previous season data and and will not be accurate, but at least you will be able to interact with it.
 
-If the baseball season isn't over, make sure the following variable is set correctly in config.js:
+If the baseball season isn't over, make sure the following variable is set correctly in `config.js`:
 ```
 exports.MLBSeason = '2017';
 ```
