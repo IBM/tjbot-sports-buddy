@@ -183,17 +183,19 @@ profile.
 
 ## 10. Run the application
 
-First, update the values in [`config.new.js`](config.new.js) and rename it to `config.js`:
+First, copy the [`env.sample`](env.sample) file to `.env` and then update the file with the credentials created in the previous steps:
 
 ```
-$ cp config.new.js config.js
-### edit config.js
+$ cp env.sample .env
+### edit .env
 ```
 
-Second, install dependencies, run the following from the cloned repo location:
+> Note: Depending on the region that you provision your Watson Services, you will either be given a user/password or IAM apikey values for your credentials. The .env file will accomodate both. Just remember to comment out or remove all of the key-value pair entry lines that you do not use.
+
+Second, install dependencies by running the following command from the cloned repo location:
 
 ```
-$ npm install --save
+$ npm install
 ```
 
 > **NOTE:** you may need to install other dependencies, refer to the [Troubleshooting](troubleshooting) section below.
@@ -201,7 +203,7 @@ $ npm install --save
 Lastly, run the application:
 
 ```
-$ node run.js
+$ npm start
 ```
 
 # Sample output
@@ -376,6 +378,32 @@ If the baseball season isn't over, make sure the following variable is set corre
 ```
 exports.MLBSeason = '2017';
 ```
+
+### App crashes at startup with "format" error.
+
+If you see this error:
+
+```
+TJBot is listening, you may speak now.
+/Users/rhagarty/journeys/tjbot-sports-buddy/run.js:538
+      pauseDuration = probeData.format.duration + 0.2;
+                               ^
+TypeError: Cannot read property 'format' of undefined
+```
+
+The problem is assoicated with the Text-to-Speech service. Check that: 
+* The credentials in your `.env` file are correct.
+* The service has not reached it's `character` limit for the month.
+
+If you have run into the limit issue with your plan, simply delete and re-create a new instance of the service. And remember to update the .env file with your new credentials. 
+
+### When running on Mac OSX, microphone is not picking up any sound
+
+Ensure that the basic microphone functionality is working:
+
+```
+sox -d test.wav        // speak into mic, then ctrl-c to exit
+sox test.wav -d        // playback
 
 # License
 

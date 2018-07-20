@@ -13,6 +13,7 @@
   },
   "author": "Rich Hagarty",
   "dependencies": {
+    "dotenv": "^6.0.0",
     "jsonfile": "^4.0.0",
     "mic": "^2.1.1",
     "node-ffprobe": "^1.2.2",
@@ -21,13 +22,13 @@
     "prompt": "^1.0.0",
     "raspicam": "git+https://github.com/troyth/node-raspicam.git",
     "request-promise": "^4.2.1",
-    "twilio": "^3.0.0",
-    "watson-developer-cloud": "^2.32.0"
+    "twilio": "^3.18.0",
+    "watson-developer-cloud": "^3.5.3"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "jshint": "^2.9.4",
-    "mocha": "^3.4.1"
+    "mocha": "^5.0.0"
   },
   "license": "Apache-2.0",
   "licenses": [

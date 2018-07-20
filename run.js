@@ -16,8 +16,9 @@
 
  /* jshint esversion: 6 */
 
-const WATSON = require('watson-developer-cloud');
-const CONFIG = require('./config.js');
+require('dotenv').config({ silent: true });
+
+const watson = require('watson-developer-cloud');
 const FS = require('fs');
 const MIC = require('mic');
 const PLAYER = require('play-sound')(opts = {});
@@ -25,9 +26,6 @@ const PROBE = require('node-ffprobe');
 const REQUEST = require('request-promise');
 const PROMISE = require('promise');
 
-const ATTENTION_WORD = CONFIG.attentionWord;
-const MLB_SEASON = CONFIG.MLBSeason;
-const OFF_SEASON = CONFIG.offSeason;
 var mlbTeams;
 var mlbTeamsRetrieved = false;
 var mlbStandings;
@@ -45,37 +43,24 @@ var debug = false;
 /**
  * Create Watson Services.
  */
-const SPEECH_TO_TEXT = WATSON.speech_to_text({
-  username: CONFIG.STTUsername,
-  password: CONFIG.STTPassword,
-  version: 'v1'
+const conversation = new watson.AssistantV1({
+  version: '2018-02-16'
 });
 
-const TONE_ANALYZER = WATSON.tone_analyzer({
-  username: CONFIG.ToneUsername,
-  password: CONFIG.TonePassword,
-  version: 'v3',
-  version_date: '2016-05-19'
+const speech_to_text = new watson.SpeechToTextV1({
+//  url: 'https://stream.watsonplatform.net/speech-to-text/api/'
 });
 
-const CONVERSATION = WATSON.conversation({
-  username: CONFIG.ConUsername,
-  password: CONFIG.ConPassword,
-  version: 'v1',
-  version_date: '2016-07-11'
+const tone_analyzer = new watson.ToneAnalyzerV3({
+  version: '2017-09-21'
 });
 
-const TEXT_TO_SPEECH = WATSON.text_to_speech({
-  username: CONFIG.TTSUsername,
-  password: CONFIG.TTSPassword,
-  version: 'v1'
+const text_to_speech = new watson.TextToSpeechV1({
+  url: 'https://stream.watsonplatform.net/text-to-speech/api'
 });
 
-const DISCOVERY = WATSON.discovery({
-  username: CONFIG.DiscoUsername,
-  password: CONFIG.DiscoPassword,
-  version: 'v1',
-  version_date: '2017-08-01'
+const discovery = new watson.DiscoveryV1({
+  version: '2018-03-05'
 });
 
 
@@ -83,13 +68,13 @@ const DISCOVERY = WATSON.discovery({
  * Create Twilio Client.
  */
 const TWILIO = require('twilio')(
-  CONFIG.TwilioAccountSID,
-  CONFIG.TwilioAuthToken
+  process.env.TWILIO_SID,
+  process.env.TWILIO_AUTH_TOKEN
 );
-const TWILIO_PHONE_NO = CONFIG.TwilioPhoneNo;
-// If phone number found in config file, use it.
-if (CONFIG.UserPhoneNo) {
-  textPhoneNo = CONFIG.UserPhoneNo;
+const TWILIO_PHONE_NO = process.env.TWILIO_PHONE_NUMBER;
+// If phone number to always text to is found in config file, use it.
+if (process.env.TWILIO_TEXT_PHONE_NUMBER) {
+  textPhoneNo = process.env.TWILIO_TEXT_PHONE_NUMBER;
   context.text_sent = 'success';
 }
 
@@ -97,7 +82,7 @@ if (CONFIG.UserPhoneNo) {
 /**
  * Retrieve key to 3rd party MLB data
  */
-const MLB_DATA_KEY = CONFIG.MLBFantasySubscriptionKey;
+const MLB_DATA_KEY = process.env.MLB_FANTASY_SPORTS_KEY;
 
 
 /**
@@ -127,7 +112,7 @@ MIC_INPUT_STREAM.on('pauseComplete', ()=> {
  */
 function getCurrentDate() {
   var date;
-  if (OFF_SEASON) {
+  if (process.env.IN_OFF_SEASON) {
     // all saved data is from Sept 28, 2017
     date = new Date(2017, 8, 28);
   } else {
@@ -145,7 +130,7 @@ function getMlbTeams() {
     uri: 'https://api.fantasydata.net/mlb/v2/JSON/teams',
     headers: {
       'Host': 'api.fantasydata.net',
-      'Ocp-Apim-Subscription-Key': MLB_DATA_KEY
+      'Ocp-Apim-Subscription-Key': process.env.MLB_FANTASY_SPORTS_KEY
     }
   };
 
@@ -437,9 +422,9 @@ function textTeamInfo() {
   let headlines = [];
   const numHeadlines = 2;
 
-  DISCOVERY.query({
-    environment_id: CONFIG.DiscoEnvironmentId,
-    collection_id: CONFIG.DiscoCollectionId,
+  discovery.query({
+    environment_id: process.env.DISCOVERY_ENVIORNMENT_ID,
+    collection_id: process.env.DISCOVERY_COLLECTION_ID,
     query: context.my_team + ' baseball',
     count: 5
   }, (err, response) => {
@@ -491,8 +476,8 @@ function textTeamInfo() {
     // Tell user text has been sent.
     console.log('Schedule and headlines have been sent');
     printContext('before call 4:');
-    CONVERSATION.message({
-      workspace_id: CONFIG.ConWorkspace,
+    conversation.message({
+      workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
       input: {'text': ''},
       context: context
     }, (err, response) => {
@@ -510,7 +495,7 @@ function textTeamInfo() {
  * Convert speech to text.
  */
 const textStream = MIC_INPUT_STREAM.pipe(
-  SPEECH_TO_TEXT.createRecognizeStream({
+  speech_to_text.createRecognizeStream({
     content_type: 'audio/l16; rate=44100; channels=2',
   })).setEncoding('utf8');
 
@@ -522,7 +507,7 @@ const getEmotion = (text) => {
   return new Promise((resolve) => {
     let maxScore = 0.01;
     let emotion = 'default';
-    TONE_ANALYZER.tone({text: text}, (err, tone) => {
+    tone_analyzer.tone({text: text}, (err, tone) => {
       let tones = tone.document_tone.tone_categories[0].tones;
       for (let i=0; i<tones.length; i++) {
         if (tones[i].score > maxScore){
@@ -542,10 +527,11 @@ const getEmotion = (text) => {
 const speakResponse = (text) => {
   const params = {
     text: text,
-    voice: CONFIG.voice,
+    voice: process.env.TJBOT_VOICE,
     accept: 'audio/wav'
   };
-  TEXT_TO_SPEECH.synthesize(params)
+
+  text_to_speech.synthesize(params)
   .pipe(FS.createWriteStream('output.wav'))
   .on('close', () => {
     PROBE('output.wav', function(err, probeData) {
@@ -650,8 +636,8 @@ function mlbConversation() {
     userSpeechText = user_speech_text.toLowerCase();
     console.log('\n\nWatson hears: ', user_speech_text);
     printContext('before call 1:');
-    CONVERSATION.message({
-      workspace_id: CONFIG.ConWorkspace,
+    conversation.message({
+      workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
       input: {'text': user_speech_text},
       context: context
     }, (err, response) => {
@@ -669,8 +655,8 @@ function mlbConversation() {
         getEmotion(context.emotion).then((detectedEmotion) => {
           context.emotion = detectedEmotion.emotion;
           printContext('before call 2:');
-          CONVERSATION.message({
-            workspace_id: CONFIG.ConWorkspace,
+          conversation.message({
+            workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
             input: {'text': userSpeechText},
             context: context
           }, (err, response) => {
@@ -685,8 +671,8 @@ function mlbConversation() {
         // User has identified which team they want to follow.
         context.standings = getCurrentStandings(context.my_team, mlbStandings);
         printContext('before call 3:');
-        CONVERSATION.message({
-          workspace_id: CONFIG.ConWorkspace,
+        conversation.message({
+          workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
           input: {'text': userSpeechText},
           context: context
         }, (err, response) => {
@@ -709,7 +695,7 @@ function mlbConversation() {
  * Load all MLB data and start conversation when completed.
  */
 function init() {
-  if (OFF_SEASON) {
+  if (process.env.IN_OFF_SEASON) {
     var fs = require('fs');
     mlbTeams = JSON.parse(fs.readFileSync('data/mlb-teams.json', 'utf8'));
     mlbStandings = JSON.parse(fs.readFileSync('data/mlb-standings.json', 'utf8'));
