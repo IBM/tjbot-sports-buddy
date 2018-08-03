@@ -26,6 +26,11 @@ const PROBE = require('node-ffprobe');
 const REQUEST = require('request-promise');
 const PROMISE = require('promise');
 
+const MLB_SEASON = process.env.MLB_SEASON;
+const OFF_SEASON = (process.env.IN_OFF_SEASON == 'true' ? true : false);
+
+console.log('Are we running during the Off-Season? ' + OFF_SEASON);
+
 var mlbTeams;
 var mlbTeamsRetrieved = false;
 var mlbStandings;
@@ -43,24 +48,37 @@ var debug = false;
 /**
  * Create Watson Services.
  */
+var version_date = '2018-02-16';
+if (process.env.CONVERSATION_VERSION_DATE !== undefined) {
+  // if defined, override with value from .env
+  version_date = process.env.CONVERSATION_VERSION_DATE;
+}
 const conversation = new watson.AssistantV1({
-  version: '2018-02-16'
+  version: version_date
 });
 
 const speech_to_text = new watson.SpeechToTextV1({
-//  url: 'https://stream.watsonplatform.net/speech-to-text/api/'
 });
 
+version_date = '2017-09-21';
+if (process.env.TONE_ANALYZER_VERSION_DATE !== undefined) {
+  // if defined, override with value from .env
+  version_date = process.env.TONE_ANALYZER_VERSION_DATE;
+}
 const tone_analyzer = new watson.ToneAnalyzerV3({
-  version: '2017-09-21'
+  version: version_date
 });
 
 const text_to_speech = new watson.TextToSpeechV1({
-  url: 'https://stream.watsonplatform.net/text-to-speech/api'
 });
 
+version_date = '2018-03-05';
+if (process.env.DISCOVERY_VERSION_DATE !== undefined) {
+  // if defined, override with value from .env
+  version_date = process.env.DISCOVERY_VERSION_DATE;
+}
 const discovery = new watson.DiscoveryV1({
-  version: '2018-03-05'
+  version: version_date
 });
 
 
@@ -73,8 +91,8 @@ const TWILIO = require('twilio')(
 );
 const TWILIO_PHONE_NO = process.env.TWILIO_PHONE_NUMBER;
 // If phone number to always text to is found in config file, use it.
-if (process.env.TWILIO_TEXT_PHONE_NUMBER) {
-  textPhoneNo = process.env.TWILIO_TEXT_PHONE_NUMBER;
+if (process.env.TWILIO_TEXT_TO_PHONE_NUMBER) {
+  textPhoneNo = process.env.TWILIO_TEXT_TO_PHONE_NUMBER;
   context.text_sent = 'success';
 }
 
@@ -112,7 +130,7 @@ MIC_INPUT_STREAM.on('pauseComplete', ()=> {
  */
 function getCurrentDate() {
   var date;
-  if (process.env.IN_OFF_SEASON) {
+  if (OFF_SEASON) {
     // all saved data is from Sept 28, 2017
     date = new Date(2017, 8, 28);
   } else {
@@ -423,8 +441,8 @@ function textTeamInfo() {
   const numHeadlines = 2;
 
   discovery.query({
-    environment_id: process.env.DISCOVERY_ENVIORNMENT_ID,
-    collection_id: process.env.DISCOVERY_COLLECTION_ID,
+    environment_id: 'system',
+    collection_id: 'news',
     query: context.my_team + ' baseball',
     count: 5
   }, (err, response) => {
@@ -496,7 +514,9 @@ function textTeamInfo() {
  */
 const textStream = MIC_INPUT_STREAM.pipe(
   speech_to_text.createRecognizeStream({
-    content_type: 'audio/l16; rate=44100; channels=2',
+    'content_type': 'audio/l16; rate=44100; channels=2',
+    interim_results: true,
+    inactivity_timeout: -1
   })).setEncoding('utf8');
 
 
@@ -504,15 +524,23 @@ const textStream = MIC_INPUT_STREAM.pipe(
  * Get emotional tone from speech.
  */
 const getEmotion = (text) => {
+  // only the following emotions are handled by Watson Assistant
+  const valid_emotions = ['disgust', 'fear', 'anger', 'joy', 'sadness'];
+
   return new Promise((resolve) => {
     let maxScore = 0.01;
     let emotion = 'default';
-    tone_analyzer.tone({text: text}, (err, tone) => {
-      let tones = tone.document_tone.tone_categories[0].tones;
-      for (let i=0; i<tones.length; i++) {
-        if (tones[i].score > maxScore){
-          maxScore = tones[i].score;
-          emotion = tones[i].tone_id;
+    tone_analyzer.tone({ 'text': text }, (err, tone) => {
+      console.log(JSON.stringify(tone, null, 2));
+      if (tone && tone.document_tone) {
+        let tones = tone.document_tone.tones;
+        for (let i=0; i<tones.length; i++) {
+          if (tones[i].score > maxScore){
+            if (valid_emotions.includes(tones[i].tone_id)) {
+              maxScore = tones[i].score;
+              emotion = tones[i].tone_id;
+            }
+          }
         }
       }
       resolve({emotion, maxScore});
@@ -531,14 +559,19 @@ const speakResponse = (text) => {
     accept: 'audio/wav'
   };
 
-  text_to_speech.synthesize(params)
-  .pipe(FS.createWriteStream('output.wav'))
-  .on('close', () => {
+  var writeStream = text_to_speech.synthesize(params)
+    .pipe(FS.createWriteStream('output.wav'));
+
+  writeStream.on('close', function() {
     PROBE('output.wav', function(err, probeData) {
-      pauseDuration = probeData.format.duration + 0.2;
+      pauseDuration = probeData.format.duration;
       MIC_INSTANCE.pause();
       PLAYER.play('output.wav');
     });
+  });
+  
+  writeStream.on('error', function(err) {
+    console.log('Text-to-speech streaming error: ' + err);
   });
 };
 
@@ -550,7 +583,7 @@ const speakResponse = (text) => {
 function validateTeamStep() {
   if (context &&
       context.system &&
-      context.system.dialog_stack[0] === 'Validate Team') {
+      context.system.dialog_stack[0].dialog_node === 'Validate Team') {
     return true;
   }
   return false;
@@ -564,7 +597,7 @@ function validateTeamStep() {
 function validateEmotionStep() {
   if (context &&
       context.system &&
-      context.system.dialog_stack[0] === 'Validate Emotion') {
+      context.system.dialog_stack[0].dialog_node === 'Validate Emotion') {
     return true;
   }
   return false;
@@ -578,7 +611,7 @@ function validateEmotionStep() {
 function textTeamInfoStep() {
   if (context &&
       context.system &&
-      context.system.dialog_stack[0] === 'Text Team Info') {
+      context.system.dialog_stack[0].dialog_node === 'Text Team Info') {
     return true;
   }
   return false;
@@ -597,8 +630,9 @@ function printContext(header) {
 
     if (context.system) {
       if (context.system.dialog_stack) {
+        const util = require('util');  
         console.log("     dialog_stack: ['" +
-                    context.system.dialog_stack + "']");
+                    util.inspect(context.system.dialog_stack, false, null) + "']");
       }
       if (context.emotion) {
         console.log("     emotion: " + context.emotion);
@@ -685,6 +719,8 @@ function mlbConversation() {
       } else if (textTeamInfoStep()) {
         // User has requested that team info be texted to them.
         textTeamInfo();
+      } else {
+        printContext('NO STEP !!! after call 3:');
       }
     });
   });
@@ -695,7 +731,7 @@ function mlbConversation() {
  * Load all MLB data and start conversation when completed.
  */
 function init() {
-  if (process.env.IN_OFF_SEASON) {
+  if (OFF_SEASON) {
     var fs = require('fs');
     mlbTeams = JSON.parse(fs.readFileSync('data/mlb-teams.json', 'utf8'));
     mlbStandings = JSON.parse(fs.readFileSync('data/mlb-standings.json', 'utf8'));

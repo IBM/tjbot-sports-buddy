@@ -1,1 +1,0 @@
-{ "code" : 401 , "error" : "Not Authorized" , "description" : "2018-07-19T10:00:43-05:00, Error ERCDPLTFRM-INVLDCHR occurred when accessing https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?voice=en-US_MichaelVoice, Tran-Id: stream01-145845035 - " } 
