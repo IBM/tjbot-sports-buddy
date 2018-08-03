@@ -16,8 +16,9 @@
 
  /* jshint esversion: 6 */
 
-const WATSON = require('watson-developer-cloud');
-const CONFIG = require('./config.js');
+require('dotenv').config({ silent: true });
+
+const watson = require('watson-developer-cloud');
 const FS = require('fs');
 const MIC = require('mic');
 const PLAYER = require('play-sound')(opts = {});
@@ -25,9 +26,11 @@ const PROBE = require('node-ffprobe');
 const REQUEST = require('request-promise');
 const PROMISE = require('promise');
 
-const ATTENTION_WORD = CONFIG.attentionWord;
-const MLB_SEASON = CONFIG.MLBSeason;
-const OFF_SEASON = CONFIG.offSeason;
+const MLB_SEASON = process.env.MLB_SEASON;
+const OFF_SEASON = (process.env.IN_OFF_SEASON == 'true' ? true : false);
+
+console.log('Are we running during the Off-Season? ' + OFF_SEASON);
+
 var mlbTeams;
 var mlbTeamsRetrieved = false;
 var mlbStandings;
@@ -45,37 +48,37 @@ var debug = false;
 /**
  * Create Watson Services.
  */
-const SPEECH_TO_TEXT = WATSON.speech_to_text({
-  username: CONFIG.STTUsername,
-  password: CONFIG.STTPassword,
-  version: 'v1'
+var version_date = '2018-02-16';
+if (process.env.CONVERSATION_VERSION_DATE !== undefined) {
+  // if defined, override with value from .env
+  version_date = process.env.CONVERSATION_VERSION_DATE;
+}
+const conversation = new watson.AssistantV1({
+  version: version_date
 });
 
-const TONE_ANALYZER = WATSON.tone_analyzer({
-  username: CONFIG.ToneUsername,
-  password: CONFIG.TonePassword,
-  version: 'v3',
-  version_date: '2016-05-19'
+const speech_to_text = new watson.SpeechToTextV1({
 });
 
-const CONVERSATION = WATSON.conversation({
-  username: CONFIG.ConUsername,
-  password: CONFIG.ConPassword,
-  version: 'v1',
-  version_date: '2016-07-11'
+version_date = '2017-09-21';
+if (process.env.TONE_ANALYZER_VERSION_DATE !== undefined) {
+  // if defined, override with value from .env
+  version_date = process.env.TONE_ANALYZER_VERSION_DATE;
+}
+const tone_analyzer = new watson.ToneAnalyzerV3({
+  version: version_date
 });
 
-const TEXT_TO_SPEECH = WATSON.text_to_speech({
-  username: CONFIG.TTSUsername,
-  password: CONFIG.TTSPassword,
-  version: 'v1'
+const text_to_speech = new watson.TextToSpeechV1({
 });
 
-const DISCOVERY = WATSON.discovery({
-  username: CONFIG.DiscoUsername,
-  password: CONFIG.DiscoPassword,
-  version: 'v1',
-  version_date: '2017-08-01'
+version_date = '2018-03-05';
+if (process.env.DISCOVERY_VERSION_DATE !== undefined) {
+  // if defined, override with value from .env
+  version_date = process.env.DISCOVERY_VERSION_DATE;
+}
+const discovery = new watson.DiscoveryV1({
+  version: version_date
 });
 
 
@@ -83,13 +86,13 @@ const DISCOVERY = WATSON.discovery({
  * Create Twilio Client.
  */
 const TWILIO = require('twilio')(
-  CONFIG.TwilioAccountSID,
-  CONFIG.TwilioAuthToken
+  process.env.TWILIO_SID,
+  process.env.TWILIO_AUTH_TOKEN
 );
-const TWILIO_PHONE_NO = CONFIG.TwilioPhoneNo;
-// If phone number found in config file, use it.
-if (CONFIG.UserPhoneNo) {
-  textPhoneNo = CONFIG.UserPhoneNo;
+const TWILIO_PHONE_NO = process.env.TWILIO_PHONE_NUMBER;
+// If phone number to always text to is found in config file, use it.
+if (process.env.TWILIO_TEXT_TO_PHONE_NUMBER) {
+  textPhoneNo = process.env.TWILIO_TEXT_TO_PHONE_NUMBER;
   context.text_sent = 'success';
 }
 
@@ -97,7 +100,7 @@ if (CONFIG.UserPhoneNo) {
 /**
  * Retrieve key to 3rd party MLB data
  */
-const MLB_DATA_KEY = CONFIG.MLBFantasySubscriptionKey;
+const MLB_DATA_KEY = process.env.MLB_FANTASY_SPORTS_KEY;
 
 
 /**
@@ -145,7 +148,7 @@ function getMlbTeams() {
     uri: 'https://api.fantasydata.net/mlb/v2/JSON/teams',
     headers: {
       'Host': 'api.fantasydata.net',
-      'Ocp-Apim-Subscription-Key': MLB_DATA_KEY
+      'Ocp-Apim-Subscription-Key': process.env.MLB_FANTASY_SPORTS_KEY
     }
   };
 
@@ -437,9 +440,9 @@ function textTeamInfo() {
   let headlines = [];
   const numHeadlines = 2;
 
-  DISCOVERY.query({
-    environment_id: CONFIG.DiscoEnvironmentId,
-    collection_id: CONFIG.DiscoCollectionId,
+  discovery.query({
+    environment_id: 'system',
+    collection_id: 'news',
     query: context.my_team + ' baseball',
     count: 5
   }, (err, response) => {
@@ -491,8 +494,8 @@ function textTeamInfo() {
     // Tell user text has been sent.
     console.log('Schedule and headlines have been sent');
     printContext('before call 4:');
-    CONVERSATION.message({
-      workspace_id: CONFIG.ConWorkspace,
+    conversation.message({
+      workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
       input: {'text': ''},
       context: context
     }, (err, response) => {
@@ -510,8 +513,10 @@ function textTeamInfo() {
  * Convert speech to text.
  */
 const textStream = MIC_INPUT_STREAM.pipe(
-  SPEECH_TO_TEXT.createRecognizeStream({
-    content_type: 'audio/l16; rate=44100; channels=2',
+  speech_to_text.createRecognizeStream({
+    'content_type': 'audio/l16; rate=44100; channels=2',
+    interim_results: true,
+    inactivity_timeout: -1
   })).setEncoding('utf8');
 
 
@@ -519,15 +524,23 @@ const textStream = MIC_INPUT_STREAM.pipe(
  * Get emotional tone from speech.
  */
 const getEmotion = (text) => {
+  // only the following emotions are handled by Watson Assistant
+  const valid_emotions = ['disgust', 'fear', 'anger', 'joy', 'sadness'];
+
   return new Promise((resolve) => {
     let maxScore = 0.01;
     let emotion = 'default';
-    TONE_ANALYZER.tone({text: text}, (err, tone) => {
-      let tones = tone.document_tone.tone_categories[0].tones;
-      for (let i=0; i<tones.length; i++) {
-        if (tones[i].score > maxScore){
-          maxScore = tones[i].score;
-          emotion = tones[i].tone_id;
+    tone_analyzer.tone({ 'text': text }, (err, tone) => {
+      console.log(JSON.stringify(tone, null, 2));
+      if (tone && tone.document_tone) {
+        let tones = tone.document_tone.tones;
+        for (let i=0; i<tones.length; i++) {
+          if (tones[i].score > maxScore){
+            if (valid_emotions.includes(tones[i].tone_id)) {
+              maxScore = tones[i].score;
+              emotion = tones[i].tone_id;
+            }
+          }
         }
       }
       resolve({emotion, maxScore});
@@ -542,17 +555,23 @@ const getEmotion = (text) => {
 const speakResponse = (text) => {
   const params = {
     text: text,
-    voice: CONFIG.voice,
+    voice: process.env.TJBOT_VOICE,
     accept: 'audio/wav'
   };
-  TEXT_TO_SPEECH.synthesize(params)
-  .pipe(FS.createWriteStream('output.wav'))
-  .on('close', () => {
+
+  var writeStream = text_to_speech.synthesize(params)
+    .pipe(FS.createWriteStream('output.wav'));
+
+  writeStream.on('close', function() {
     PROBE('output.wav', function(err, probeData) {
-      pauseDuration = probeData.format.duration + 0.2;
+      pauseDuration = probeData.format.duration;
       MIC_INSTANCE.pause();
       PLAYER.play('output.wav');
     });
+  });
+  
+  writeStream.on('error', function(err) {
+    console.log('Text-to-speech streaming error: ' + err);
   });
 };
 
@@ -564,7 +583,7 @@ const speakResponse = (text) => {
 function validateTeamStep() {
   if (context &&
       context.system &&
-      context.system.dialog_stack[0] === 'Validate Team') {
+      context.system.dialog_stack[0].dialog_node === 'Validate Team') {
     return true;
   }
   return false;
@@ -578,7 +597,7 @@ function validateTeamStep() {
 function validateEmotionStep() {
   if (context &&
       context.system &&
-      context.system.dialog_stack[0] === 'Validate Emotion') {
+      context.system.dialog_stack[0].dialog_node === 'Validate Emotion') {
     return true;
   }
   return false;
@@ -592,7 +611,7 @@ function validateEmotionStep() {
 function textTeamInfoStep() {
   if (context &&
       context.system &&
-      context.system.dialog_stack[0] === 'Text Team Info') {
+      context.system.dialog_stack[0].dialog_node === 'Text Team Info') {
     return true;
   }
   return false;
@@ -611,8 +630,9 @@ function printContext(header) {
 
     if (context.system) {
       if (context.system.dialog_stack) {
+        const util = require('util');  
         console.log("     dialog_stack: ['" +
-                    context.system.dialog_stack + "']");
+                    util.inspect(context.system.dialog_stack, false, null) + "']");
       }
       if (context.emotion) {
         console.log("     emotion: " + context.emotion);
@@ -650,8 +670,8 @@ function mlbConversation() {
     userSpeechText = user_speech_text.toLowerCase();
     console.log('\n\nWatson hears: ', user_speech_text);
     printContext('before call 1:');
-    CONVERSATION.message({
-      workspace_id: CONFIG.ConWorkspace,
+    conversation.message({
+      workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
       input: {'text': user_speech_text},
       context: context
     }, (err, response) => {
@@ -669,8 +689,8 @@ function mlbConversation() {
         getEmotion(context.emotion).then((detectedEmotion) => {
           context.emotion = detectedEmotion.emotion;
           printContext('before call 2:');
-          CONVERSATION.message({
-            workspace_id: CONFIG.ConWorkspace,
+          conversation.message({
+            workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
             input: {'text': userSpeechText},
             context: context
           }, (err, response) => {
@@ -685,8 +705,8 @@ function mlbConversation() {
         // User has identified which team they want to follow.
         context.standings = getCurrentStandings(context.my_team, mlbStandings);
         printContext('before call 3:');
-        CONVERSATION.message({
-          workspace_id: CONFIG.ConWorkspace,
+        conversation.message({
+          workspace_id: process.env.CONVERSATION_WORKSPACE_ID,
           input: {'text': userSpeechText},
           context: context
         }, (err, response) => {
@@ -699,6 +719,8 @@ function mlbConversation() {
       } else if (textTeamInfoStep()) {
         // User has requested that team info be texted to them.
         textTeamInfo();
+      } else {
+        printContext('NO STEP !!! after call 3:');
       }
     });
   });
