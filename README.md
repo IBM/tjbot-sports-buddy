@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/tjbot-sports-buddy.svg?branch=master)](https://travis-ci.org/IBM/tjbot-sports-buddy)
+[![Build Status](https://api.travis-ci.org/IBM/tjbot-sports-buddy.svg?branch=master)](https://travis-ci.org/IBM/tjbot-sports-buddy)
 
 # Build a TJBot using Watson Services to talk about sports
 
@@ -42,7 +42,7 @@ Want to take your Watson app to the next level? Looking to leverage Watson Brand
 
 # Watch the Video
 
-[![](http://img.youtube.com/vi/NJ87_rYfH0c/0.jpg)](https://www.youtube.com/watch?v=NJ87_rYfH0c)
+[![](https://img.youtube.com/vi/NJ87_rYfH0c/0.jpg)](https://www.youtube.com/watch?v=NJ87_rYfH0c)
 
 # Steps
 
@@ -54,7 +54,7 @@ would like to go directly to building this on a TJBot, jump to the section entit
 
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create IBM Cloud services](#2-create-ibm-cloud-services)
-3. [Configure Watson Assistant](#3-configure-watson-conversation)
+3. [Configure Watson Assistant](#3-configure-watson-assistant)
 4. [Enable Watson Discovery](#4-enable-watson-discovery)
 5. [Enable Watson Speech to Text](#5-enable-watson-speech-to-text)
 6. [Enable Watson Text to Speech](#6-enable-watson-text-to-speech)
@@ -77,11 +77,11 @@ We’ll be using the file [`data/workspace.json`](data/workspace.json)
 
 Create the following services:
 
-  * [**Watson Assistant**](https://console.ng.bluemix.net/catalog/services/conversation)
-  * [**Watson Discovery**](https://console.ng.bluemix.net/catalog/services/discovery)
-  * [**Watson Text to Speech**](https://console.ng.bluemix.net/catalog/services/text-to-speech/)
-  * [**Watson Speech to Text**](https://console.ng.bluemix.net/catalog/services/speech-to-text/)
-  * [**Watson Tone Analyzer**](https://console.ng.bluemix.net/catalog/services/tone-analyzer/)
+  * [**Watson Assistant**](https://cloud.ibm.com/catalog/services/conversation)
+  * [**Watson Discovery**](https://cloud.ibm.com/catalog/services/discovery)
+  * [**Watson Text to Speech**](https://cloud.ibm.com/catalog/services/text-to-speech/)
+  * [**Watson Speech to Text**](https://cloud.ibm.com/catalog/services/speech-to-text/)
+  * [**Watson Tone Analyzer**](https://cloud.ibm.com/catalog/services/tone-analyzer/)
 
 
 ## 3. Configure Watson Assistant
@@ -199,7 +199,7 @@ Second, install dependencies by running the following command from the cloned re
 npm install
 ```
 
-> **NOTE:** you may need to install other dependencies, refer to the [Troubleshooting](troubleshooting) section below.
+> **NOTE:** you may need to install other dependencies, refer to the [Troubleshooting](#troubleshooting) section below.
 
 Lastly, run the application:
 
@@ -250,7 +250,7 @@ Here is a recap of the services used to perform this conversation:
 ## Build a TJBot
 
 To build your TJBot, follow the tutorial entitled:
-[Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson-developer-cloud/build-a-chatbot-that-cares-part-2-66367cf26e4b).
+[Build a Chatbot That Cares - Part2](https://medium.com/ibm-watson/build-a-chatbot-that-cares-part-2-66367cf26e4b).
 
 It provides a comprehensive guide for:
 
@@ -409,6 +409,6 @@ sox test.wav -d        // playback
 
 # License
 
-This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.txt).
+This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
-[Apache Software License (ASL) FAQ](http://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
+[Apache Software License (ASL) FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
