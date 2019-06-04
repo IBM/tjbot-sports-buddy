@@ -1,4 +1,6 @@
-[![Build Status](https://api.travis-ci.org/IBM/tjbot-sports-buddy.svg?branch=master)](https://travis-ci.org/IBM/tjbot-sports-buddy)
+# WARNING: This repository is no longer maintained :warning:
+
+> This repository will not be updated. The repository will be kept available in read-only mode. Refer to https://github.com/IBM/sms-spam-filter-using-hortonworks for a similar example.
 
 # Build a TJBot using Watson Services to talk about sports
 
